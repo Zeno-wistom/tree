@@ -1,9 +1,9 @@
 {
   "errors": [],
   "openingFrameIntervals": {
-    "samples": 367,
+    "samples": 364,
     "p50Ms": 8.300000000000182,
-    "p95Ms": 8.5,
+    "p95Ms": 8.400000000001455,
     "maxMs": 58.30000000000018
   },
   "note": "Edge 自动操作录屏时采样，非目标触屏/GPU基准"
