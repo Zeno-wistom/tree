@@ -1,0 +1,13 @@
+import { chromium } from '@playwright/test';
+import fs from 'node:fs/promises';
+const b=await chromium.launch({channel:'msedge'});
+const c=await b.newContext({viewport:{width:1920,height:1080},recordVideo:{dir:'docs/v3/video',size:{width:1920,height:1080}}});
+const p=await c.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error'||m.type()==='warning')errors.push(m.text());});
+const wait=async phase=>{await p.waitForFunction(x=>{const el=document.querySelector('.v3');return el?.getAttribute('data-state')===x&&el?.getAttribute('data-busy')==='false';},phase);};
+await p.goto('http://127.0.0.1:5174/?v3');await p.mouse.move(0,0);await p.screenshot({path:'docs/v3/01-idle.png'});await p.waitForTimeout(5600);
+await p.evaluate(()=>{window.v3Frames=[];window.v3Measure=true;let last=performance.now();function tick(t){window.v3Frames.push(t-last);last=t;if(window.v3Measure)requestAnimationFrame(tick);}requestAnimationFrame(tick);});
+await p.getByRole('button',{name:'打开校园来信'}).click();await p.waitForTimeout(700);await p.screenshot({path:'docs/v3/opening-mid.png'});await wait('DISCOVER');await p.mouse.move(0,0);await p.screenshot({path:'docs/v3/02-discover.png'});
+const perf=await p.evaluate(()=>{window.v3Measure=false;const f=window.v3Frames.slice(2).sort((a,b)=>a-b);return{samples:f.length,p50Ms:f[Math.floor(f.length*.5)],p95Ms:f[Math.floor(f.length*.95)],maxMs:f[f.length-1]};});
+await p.locator('.v3-event').first().hover();await p.waitForTimeout(450);await p.screenshot({path:'docs/v3/focus.png'});await p.locator('.v3-event').first().click();await wait('DETAIL');await p.screenshot({path:'docs/v3/03-detail.png'});await p.waitForTimeout(900);
+await p.getByRole('button',{name:'抽出纪念明信片'}).click();await wait('POSTCARD');await p.screenshot({path:'docs/v3/04-postcard.png'});await p.waitForTimeout(600);await p.getByRole('button',{name:'明信片正面，点击翻面'}).click();await wait('POSTCARD');await p.screenshot({path:'docs/v3/04-back.png'});await p.waitForTimeout(800);await p.getByRole('button',{name:'确认收藏这张明信片'}).click();await wait('COMPLETE');await p.screenshot({path:'docs/v3/05-complete.png'});await p.waitForTimeout(1300);await p.getByRole('button',{name:'完成体验，返回待机'}).click();await wait('IDLE');await p.waitForTimeout(500);
+const video=p.video();await c.close();await video.saveAs('docs/v3/full-experience.webm');await fs.writeFile('docs/v3/runtime.json',JSON.stringify({errors,openingFrameIntervals:perf,note:'Edge 自动操作录屏时采样，非目标触屏/GPU基准'},null,2));await b.close();

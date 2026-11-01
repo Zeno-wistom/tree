@@ -5,6 +5,7 @@ import { events, postcards, schools, schoolName, dateLabel, timeLabel, theme, se
 import type { CampusEvent, Postcard } from './data';
 import './style.css';
 import { DirectionLab } from './v2/DirectionLab';
+const EnvelopeApp = React.lazy(() => import('./v3/EnvelopeApp').then(m => ({ default: m.EnvelopeApp })));
 const PostOfficeHome = React.lazy(() => import('./postoffice/PostOfficeHome').then(m => ({ default: m.PostOfficeHome })));
 
 type Page = 'home' | 'discover' | 'detail' | 'postcard' | 'complete';
@@ -78,7 +79,7 @@ function App() {
 
 // V2 is an opt-in visual lab; the approved V1 route and its five-page flow stay intact.
 const direction = new URLSearchParams(window.location.search).get('direction');
-createRoot(document.getElementById('root')!).render(<React.StrictMode>{new URLSearchParams(location.search).has('postoffice') ? <React.Suspense fallback={<div style={{ padding: 60 }}>校园邮局正在开门…</div>}><PostOfficeHome/></React.Suspense> : direction ? <DirectionLab direction={direction}/> : <App/>}</React.StrictMode>);
+createRoot(document.getElementById('root')!).render(<React.StrictMode>{new URLSearchParams(location.search).has('v3') ? <React.Suspense fallback={<div>校园来信正在准备…</div>}><EnvelopeApp/></React.Suspense> : new URLSearchParams(location.search).has('postoffice') ? <React.Suspense fallback={<div style={{ padding: 60 }}>校园邮局正在开门…</div>}><PostOfficeHome/></React.Suspense> : direction ? <DirectionLab direction={direction}/> : <App/>}</React.StrictMode>);
 
 
 
