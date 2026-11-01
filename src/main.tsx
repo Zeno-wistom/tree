@@ -4,6 +4,8 @@ import { Art } from './Art';
 import { events, postcards, schools, schoolName, dateLabel, timeLabel, theme, sessionConfig } from './data';
 import type { CampusEvent, Postcard } from './data';
 import './style.css';
+import { DirectionLab } from './v2/DirectionLab';
+const PostOfficeHome = React.lazy(() => import('./postoffice/PostOfficeHome').then(m => ({ default: m.PostOfficeHome })));
 
 type Page = 'home' | 'discover' | 'detail' | 'postcard' | 'complete';
 const pageNames = ['发现活动', '了解活动', '预览明信片', '完成选择'];
@@ -14,7 +16,7 @@ function PostcardFace({ event, postcard, back = false }: { event: CampusEvent; p
   : <div className="postcard-front"><Art kind={postcard.frontImage}/><div className="postcard-caption"><div><span className="eyebrow">GREETINGS FROM CAMPUS</span><strong>{event.title}</strong></div><span className="serial">No. {String(events.indexOf(event) + 1).padStart(2, '0')}<br/>WINTER 2026</span></div></div>;
 }
 function App() {
-  const [page, setPage] = useState<Page>('home');
+  const [page, setPage] = useState<Page>(new URLSearchParams(location.search).has('explore') ? 'discover' : 'home');
   const [school, setSchool] = useState('all');
   const [eventId, setEventId] = useState<string | null>(null);
   const [flipped, setFlipped] = useState(false);
@@ -74,4 +76,9 @@ function App() {
   </div>;
 }
 
-createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);
+// V2 is an opt-in visual lab; the approved V1 route and its five-page flow stay intact.
+const direction = new URLSearchParams(window.location.search).get('direction');
+createRoot(document.getElementById('root')!).render(<React.StrictMode>{new URLSearchParams(location.search).has('postoffice') ? <React.Suspense fallback={<div style={{ padding: 60 }}>校园邮局正在开门…</div>}><PostOfficeHome/></React.Suspense> : direction ? <DirectionLab direction={direction}/> : <App/>}</React.StrictMode>);
+
+
+
