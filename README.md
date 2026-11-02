@@ -11,6 +11,18 @@ npm run dev
 
 打开终端输出的本地地址，默认 http://127.0.0.1:5173/ 。生产包：`npm run build`，本地检查生产包：`npm run preview`。
 
+## 版本入口
+
+| 地址 | 内容 |
+|---|---|
+| `/` | **V4**（当前交付版本，`codex/v4-visual-rebuild`） |
+| `/?v3` | V3 信封版（保留） |
+| `/?v1` | V1 五页基线（保留） |
+| `/?postoffice` | 邮局首页实验（保留） |
+
+V4 的审计结论、实现要点、验收证据与已知不足见 [docs/V4_NOTES.md](docs/V4_NOTES.md)；
+连续录屏 [docs/v4/v4-experience.mp4](docs/v4/v4-experience.mp4)，修复前后对比 `docs/v4/before-after-*.png`。
+
 ## 体验
 
 开始探索 → 按学校筛选 → 打开活动 → 查看并翻转明信片 → 确认选择 → 返回首页。
