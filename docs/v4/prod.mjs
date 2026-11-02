@@ -1,0 +1,18 @@
+import { chromium } from '@playwright/test';
+const b = await chromium.launch({ channel: 'msedge' });
+const c = await b.newContext({ viewport: { width: 1920, height: 1080 } });
+const p1 = await c.newPage();
+await p1.route('**/assets/index-*.js', r => r.abort());
+await p1.goto('http://localhost:4174/', { waitUntil: 'domcontentloaded' });
+await p1.waitForTimeout(600);
+await p1.screenshot({ path: 'docs/v4/shots/prod-shell.png' });
+await p1.close();
+const p2 = await c.newPage();
+const errs = [];
+p2.on('pageerror', e => errs.push(e.message));
+p2.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+await p2.goto('http://localhost:4174/', { waitUntil: 'networkidle' });
+await p2.waitForTimeout(1200);
+await p2.screenshot({ path: 'docs/v4/shots/prod-app.png' });
+console.log('errs', JSON.stringify(errs), 'phase', await p2.getAttribute('.v4', 'data-phase'));
+await b.close();
