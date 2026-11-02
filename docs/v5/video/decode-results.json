@@ -1,0 +1,23 @@
+[
+  {
+    "file": "v5-first-entry-wind.webm",
+    "bytes": 3774314,
+    "decodedToEnd": true,
+    "duration": "00:00:15.60",
+    "stream": "Stream #0:0(eng): Video: vp9 (Profile 0), yuv420p(tv, progressive), 1920x1080, SAR 1:1 DAR 16:9, 25 fps, 25 tbr, 1k tbn (default)"
+  },
+  {
+    "file": "v5-full-experience.webm",
+    "bytes": 14920364,
+    "decodedToEnd": true,
+    "duration": "00:00:45.84",
+    "stream": "Stream #0:0(eng): Video: vp9 (Profile 0), yuv420p(tv, progressive), 1920x1080, SAR 1:1 DAR 16:9, 25 fps, 25 tbr, 1k tbn (default)"
+  },
+  {
+    "file": "v5-open-continuous.webm",
+    "bytes": 2242144,
+    "decodedToEnd": true,
+    "duration": "00:00:06.84",
+    "stream": "Stream #0:0(eng): Video: vp9 (Profile 0), yuv420p(tv, progressive), 1920x1080, SAR 1:1 DAR 16:9, 25 fps, 25 tbr, 1k tbn (default)"
+  }
+]

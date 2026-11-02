@@ -5,7 +5,7 @@ import { mkdirSync } from 'node:fs';
 const shots = 'docs/screenshots';
 mkdirSync(shots, { recursive: true });
 async function snapshot(page: Page, name: string, size: string) { await page.screenshot({ path: `${shots}/${size}-${name}.png`, animations: 'disabled' }); }
-async function start(page: Page) { await page.goto('/'); await page.getByRole('button', { name: '开始探索' }).click(); }
+async function start(page: Page) { await page.goto('/?v1'); await page.getByRole('button', { name: '开始探索' }).click(); }
 async function choose(page: Page, name = '冬日校园漫游') { await page.getByRole('button').filter({ has: page.getByRole('heading', { name, exact: true }) }).click(); }
 async function noOuterScroll(page: Page) { expect(await page.evaluate(() => ({ x: document.documentElement.scrollWidth > innerWidth, y: document.documentElement.scrollHeight > innerHeight }))).toEqual({ x: false, y: false }); }
 
@@ -13,7 +13,7 @@ test('五页完整流程、匹配、翻面、清空与实际截图', async ({ pa
   const errors: string[] = [];
   page.on('pageerror', e => errors.push(e.message));
   page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
-  await page.goto('/');
+  await page.goto('/?v1');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('小美好');
   await noOuterScroll(page); await snapshot(page, 'P0-home', info.project.name);
   await page.getByRole('button', { name: '开始探索' }).click();

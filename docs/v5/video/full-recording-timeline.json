@@ -1,0 +1,32 @@
+{
+  "uncut": true,
+  "automatedRealBrowser": true,
+  "viewport": "1920x1080",
+  "durationSeconds": 44.989,
+  "marks": [
+    {
+      "label": "首次进入与连续三次风效",
+      "seconds": 0.725
+    },
+    {
+      "label": "揭封、开盖、同一信封沉底、逐张抽信",
+      "seconds": 15.734
+    },
+    {
+      "label": "活动详情与逆向返回",
+      "seconds": 25.459
+    },
+    {
+      "label": "明信片抽出与正反翻转",
+      "seconds": 31.802
+    },
+    {
+      "label": "确认、入套、盖章",
+      "seconds": 37.042
+    },
+    {
+      "label": "连续复位回到同一首页信封",
+      "seconds": 41.295
+    }
+  ]
+}

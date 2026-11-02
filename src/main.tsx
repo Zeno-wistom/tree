@@ -6,6 +6,7 @@ import type { CampusEvent, Postcard } from './data';
 import './style.css';
 import { DirectionLab } from './v2/DirectionLab';
 import { EnvelopeApp as EnvelopeAppV4 } from './v4/EnvelopeApp';
+import { Experience as ExperienceV5 } from './v5/Experience';
 const EnvelopeApp = React.lazy(() => import('./v3/EnvelopeApp').then(m => ({ default: m.EnvelopeApp })));
 const PostOfficeHome = React.lazy(() => import('./postoffice/PostOfficeHome').then(m => ({ default: m.PostOfficeHome })));
 
@@ -78,13 +79,15 @@ function App() {
   </div>;
 }
 
-// V1 / V2 / V3 stay reachable by query param; V4 is the default experience.
+// Earlier versions stay reachable by query param; V5 is the default experience.
 const params = new URLSearchParams(window.location.search);
 const direction = params.get('direction');
-const legacy = params.has('v1') ? 'v1' : params.has('v3') ? 'v3' : params.has('postoffice') ? 'postoffice' : direction ? 'lab' : 'v4';
+const legacy = params.has('v1') ? 'v1' : params.has('v3') ? 'v3' : params.has('v4') ? 'v4' : params.has('postoffice') ? 'postoffice' : direction ? 'lab' : 'v5';
 const root = createRoot(document.getElementById('root')!);
 
-if (legacy === 'v4') {
+if (legacy === 'v5') {
+  root.render(<ExperienceV5 />);
+} else if (legacy === 'v4') {
   root.render(<EnvelopeAppV4 />);
 } else {
   document.getElementById('first-frame')?.remove();

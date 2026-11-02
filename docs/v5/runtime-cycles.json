@@ -1,0 +1,81 @@
+{
+  "browser": "156.0.4314.58",
+  "reducedMotion": true,
+  "completedSessions": 12,
+  "snapshots": [
+    {
+      "cycle": 1,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 2,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 3,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 4,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 5,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 6,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 7,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 8,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 9,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 10,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 11,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    },
+    {
+      "cycle": 12,
+      "timelineChildren": 0,
+      "activeAnimations": 0,
+      "domNodes": 212
+    }
+  ],
+  "errors": [],
+  "limitation": "Counts live GSAP timeline children after reset; this is not a heap-allocation or physical-device endurance measurement."
+}

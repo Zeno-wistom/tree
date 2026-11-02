@@ -1,0 +1,122 @@
+[
+  {
+    "percent": 0,
+    "envelope": {
+      "x": 266.65625,
+      "y": 160,
+      "width": 1386.65625,
+      "height": 746.65625
+    },
+    "cards": [
+      {
+        "id": "winter",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      },
+      {
+        "id": "print",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      },
+      {
+        "id": "taste",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      }
+    ],
+    "phase": "OPENING"
+  },
+  {
+    "percent": 25,
+    "envelope": {
+      "x": 266.65625,
+      "y": 160,
+      "width": 1386.65625,
+      "height": 746.65625
+    },
+    "cards": [
+      {
+        "id": "winter",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      },
+      {
+        "id": "print",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      },
+      {
+        "id": "taste",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      }
+    ],
+    "phase": "OPENING"
+  },
+  {
+    "percent": 50,
+    "envelope": {
+      "x": 266.65625,
+      "y": 632.11376953125,
+      "width": 1386.65625,
+      "height": 746.65625
+    },
+    "cards": [
+      {
+        "id": "winter",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      },
+      {
+        "id": "print",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      },
+      {
+        "id": "taste",
+        "transform": "matrix(1, 0, 0, 1, 0, 170)"
+      }
+    ],
+    "phase": "OPENING"
+  },
+  {
+    "percent": 75,
+    "envelope": {
+      "x": 266.65625,
+      "y": 673.3333740234375,
+      "width": 1386.65625,
+      "height": 746.65625
+    },
+    "cards": [
+      {
+        "id": "winter",
+        "transform": "matrix(1, 0, 0, 1, 0, -226.268)"
+      },
+      {
+        "id": "print",
+        "transform": "matrix(1, 0, 0, 1, 0, -199.068)"
+      },
+      {
+        "id": "taste",
+        "transform": "matrix(1, 0, 0, 1, 0, -79.4454)"
+      }
+    ],
+    "phase": "OPENING"
+  },
+  {
+    "percent": 100,
+    "envelope": {
+      "x": 266.65625,
+      "y": 673.3333740234375,
+      "width": 1386.65625,
+      "height": 746.65625
+    },
+    "cards": [
+      {
+        "id": "winter",
+        "transform": "matrix(0.992546, -0.121869, 0.121869, 0.992546, -290, -212)"
+      },
+      {
+        "id": "print",
+        "transform": "matrix(1, 0, 0, 1, 0, -234)"
+      },
+      {
+        "id": "taste",
+        "transform": "matrix(0.992546, 0.121869, -0.121869, 0.992546, 290, -212)"
+      }
+    ],
+    "phase": "DISCOVER"
+  }
+]

@@ -6,8 +6,8 @@ const waitPhase = (page: import('@playwright/test').Page, p: string) =>
 
 test.describe('V4 · 首帧与开封', () => {
   test('静态首帧在没有 JavaScript 时也是完整信封', async ({ page }) => {
-    await page.route('**/src/main.tsx', r => r.abort());
-    await page.goto('/');
+    await page.route(/\/src\/main\.tsx(?:\?|$)/, r => r.abort());
+    await page.goto('/?v4');
     await expect(page.locator('#first-frame .flap-title')).toBeVisible();
     const box = await page.locator('#first-frame .env-layer').boundingBox();
     expect(box && box.width > 400).toBeTruthy();
@@ -16,14 +16,14 @@ test.describe('V4 · 首帧与开封', () => {
   });
 
   test('挂载后首帧被无缝接管，且不残留占位层', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     await expect(page.locator('#first-frame')).toHaveCount(0);
     await expect(page.locator('.flap-title')).toBeVisible();
   });
 
   test('用户点击后才开封，并进入活动页', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     await page.getByRole('button', { name: '打开校园来信' }).click();
     await waitPhase(page, 'DISCOVER');
@@ -32,7 +32,7 @@ test.describe('V4 · 首帧与开封', () => {
   });
 
   test('连点不会卡死或重复触发', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     const btn = page.getByRole('button', { name: '打开校园来信' });
     await btn.click({ clickCount: 3, delay: 30 }).catch(() => {});
@@ -44,7 +44,7 @@ test.describe('V4 · 首帧与开封', () => {
 
 test.describe('V4 · 活动信封', () => {
   test('聚焦时卡片抬起，相邻卡片让位', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     await page.getByRole('button', { name: '打开校园来信' }).click();
     await waitPhase(page, 'DISCOVER');
@@ -59,7 +59,7 @@ test.describe('V4 · 活动信封', () => {
   });
 
   test('学校筛选会换一组来信', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     await page.getByRole('button', { name: '打开校园来信' }).click();
     await waitPhase(page, 'DISCOVER');
@@ -71,7 +71,7 @@ test.describe('V4 · 活动信封', () => {
   });
 
   test('活动详情 → 明信片 → 收藏 → 回到待机', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     await page.getByRole('button', { name: '打开校园来信' }).click();
     await waitPhase(page, 'DISCOVER');
@@ -106,7 +106,7 @@ test.describe('V4 · 活动信封', () => {
   });
 
   test('连续翻转后仍停在完整的一面', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     await page.getByRole('button', { name: '打开校园来信' }).click();
     await waitPhase(page, 'DISCOVER');
@@ -129,7 +129,7 @@ test.describe('V4 · 活动信封', () => {
 test.describe('V4 · 无障碍与降级', () => {
   test('reduced motion 下不播放环境风', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     await page.waitForTimeout(1200);
     const leaf = await page.locator('.leaf-1').evaluate(el => getComputedStyle(el).opacity);
@@ -139,7 +139,7 @@ test.describe('V4 · 无障碍与降级', () => {
   });
 
   test('空闲超时会弹窗并可以继续', async ({ page }) => {
-    await page.goto('/?idle=1200');
+    await page.goto('/?v4&idle=1200');
     await waitPhase(page, 'IDLE');
     await page.getByRole('button', { name: '打开校园来信' }).click();
     await waitPhase(page, 'DISCOVER');
@@ -151,7 +151,7 @@ test.describe('V4 · 无障碍与降级', () => {
   });
 
   test('键盘可以打开信封', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?v4');
     await waitPhase(page, 'IDLE');
     const open = page.getByRole('button', { name: '打开校园来信' });
     await expect(open).toHaveAttribute('tabindex', '0');
