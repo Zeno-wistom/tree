@@ -1,0 +1,151 @@
+.v6b {
+  position: absolute;
+  inset: 98px 0 49px;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  padding: 0 0 0 96px;
+}
+
+.v6b-copy {
+  width: 446px;
+  padding-bottom: 12px;
+}
+
+.v6b .v6b-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  color: #2f5945;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.v6b-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.v6b[data-swing-state='occupied'] .v6b-status {
+  color: #78521e;
+}
+
+.v6b[data-swing-state='closed'] .v6b-status {
+  color: #8d372e;
+}
+
+.v6b-demo-label {
+  padding-left: 10px;
+  border-left: 1px solid #a4aa91;
+  color: #4d5a4c;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.v6b h1 {
+  max-width: 8em;
+  font: 700 53px / 1.3 var(--v6-serif);
+  letter-spacing: .025em;
+  color: var(--v6-ink);
+}
+
+.v6b h1 span {
+  white-space: nowrap;
+}
+
+.v6b .v6b-hint {
+  max-width: 21em;
+  margin: 20px 0 32px;
+  color: #44574a;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.v6-root .v6b .v6b-action {
+  min-height: 54px;
+}
+
+.v6b .v6b-action:active {
+  transform: translate(2px, 3px);
+  box-shadow: 1px 1px 0 #bfc7b1;
+}
+
+.v6b-other-routes {
+  display: flex;
+  gap: 24px;
+  margin-top: 14px;
+}
+
+.v6b .v6b-other-routes .v6-btn-text {
+  min-height: 48px;
+  padding-inline: 0;
+}
+
+
+.v6b-swing-svg {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: 960px;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.v6b-swing-rig {
+  transform-origin: 478px 97px;
+  transform-box: view-box;
+}
+
+.v6b-swing-shadow {
+  transform-origin: 478px 552px;
+  transform-box: view-box;
+}
+
+.v6b[data-swing-state='available'] {
+  --v6b-sway: 5deg;
+  --v6b-shadow-travel: 26px;
+  --v6b-sway-time: 4.8s;
+}
+
+.v6b[data-swing-state='occupied'] {
+  --v6b-sway: 9deg;
+  --v6b-shadow-travel: 47px;
+  --v6b-sway-time: 3.8s;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .v6b[data-swing-state='available'] .v6b-swing-rig,
+  .v6b[data-swing-state='occupied'] .v6b-swing-rig {
+    animation: v6b-sway var(--v6b-sway-time) ease-in-out both;
+  }
+
+  .v6b[data-swing-state='available'] .v6b-swing-shadow,
+  .v6b[data-swing-state='occupied'] .v6b-swing-shadow {
+    animation: v6b-shadow-sway var(--v6b-sway-time) ease-in-out both;
+  }
+}
+
+@keyframes v6b-sway {
+  0%, 100% { transform: none; }
+  20% { transform: skewX(var(--v6b-sway)) scaleY(.985); }
+  52% { transform: skewX(calc(-.72 * var(--v6b-sway))) scaleY(.99); }
+  78% { transform: skewX(calc(.26 * var(--v6b-sway))) scaleY(.998); }
+}
+
+@keyframes v6b-shadow-sway {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(var(--v6b-shadow-travel)) scaleX(.92); }
+  52% { transform: translateX(calc(-.72 * var(--v6b-shadow-travel))) scaleX(.95); }
+  78% { transform: translateX(calc(.26 * var(--v6b-shadow-travel))) scaleX(.98); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v6b .v6b-action:is(:hover, :active) {
+    transform: none;
+  }
+}

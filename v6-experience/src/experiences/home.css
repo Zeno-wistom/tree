@@ -1,0 +1,173 @@
+.v6-home {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 77% 54%, #fbf5e4 0%, transparent 60%),
+    linear-gradient(145deg, #f4f0e2, #e9e9d8);
+  pointer-events: none;
+}
+
+.v6-home-canopy { position: absolute; inset: 0; }
+.v6-home-bough {
+  position: absolute;
+  left: 42px;
+  top: -220px;
+  width: 1503px;
+  filter: drop-shadow(10px 14px 14px #34493717);
+}
+.v6-home-canopy-flower {
+  position: absolute;
+  left: 705px;
+  top: 19px;
+  width: 230px;
+  opacity: .78;
+  transform: rotate(23deg);
+}
+
+.v6-home-intro { position: absolute; left: 96px; top: 307px; }
+.v6-home-intro h1 {
+  font: 600 63px/1.28 var(--v6-serif);
+  letter-spacing: .025em;
+}
+.v6-home-intro .v6-home-place {
+  color: #6c4a35;
+  letter-spacing: .23em;
+  font: 600 15px/1.5 var(--v6-serif);
+  margin-bottom: 22px;
+}
+
+.v6-home-tile {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 19px;
+  opacity: .85;
+}
+
+.v6-home-object {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  gap: 8px;
+  min-width: 135px;
+  min-height: 80px;
+  border: 0;
+  padding: 12px;
+  background: none;
+  pointer-events: auto;
+}
+.v6-home[inert] .v6-home-object { pointer-events: none; }
+.v6-home-object-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 35px;
+  font: 600 18px var(--v6-serif);
+  letter-spacing: .08em;
+}
+.v6-home-object-label b { color: #884d35; font-size: 16px; }
+.v6-home-object:hover .v6-home-object-label, .v6-home-object:focus-visible .v6-home-object-label {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+.v6-home-object-motion, .v6-home-object-motion > span { display: block; }
+.v6-home-object-motion > span {
+  transition: transform 250ms var(--v6-ease), filter 250ms var(--v6-ease);
+}
+
+.v6-home-swing { left: 1242px; top: 177px; }
+.v6-home-swing-art {
+  position: relative;
+  display: block;
+  width: 108px;
+  height: 189px;
+  transform-origin: 50% 0;
+  filter: drop-shadow(6px 9px 5px #3e4e4028);
+}
+.v6-home-swing-art::before, .v6-home-swing-art::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 12px;
+  width: 3px;
+  background: repeating-linear-gradient(162deg, #7a6447 0 3px, #aa9471 3px 5px);
+  border-radius: 4px;
+}
+.v6-home-swing-art::before { left: 14px; }
+.v6-home-swing-art::after { right: 14px; }
+.v6-home-swing-art i {
+  position: absolute;
+  inset: auto 0 1px;
+  height: 20px;
+  border-radius: 46% 32% 5px 5px / 56% 35% 5px 5px;
+  background: linear-gradient(#9f6e4c, #704c36);
+  border-bottom: 5px solid #634934;
+}
+@media (hover: hover) {
+  .v6-home-swing:hover .v6-home-swing-art { transform: rotate(-4deg); }
+  .v6-home-leaf:hover .v6-home-leaf-art { transform: translateY(-5px) rotate(5deg); }
+  .v6-home-mail:hover .v6-home-mail-art { transform: translateY(-6px) rotate(3deg); }
+}
+
+.v6-home-leaf {
+  top: 88px;
+  left: 960px;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 6px;
+}
+.v6-home-leaf .v6-home-object-label { margin-top: 95px; }
+.v6-home-leaf-art { position: relative; width: 122px; height: 130px; }
+.v6-home-leaf-art::before {
+  content: '';
+  position: absolute;
+  top: -22px;
+  left: 66px;
+  height: 46px;
+  border-left: 1px solid #716c4c;
+  transform: rotate(9deg);
+}
+.v6-home-leaf-art img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: rotate(15deg);
+  filter: drop-shadow(5px 10px 6px #4b584841);
+}
+
+.v6-home-mail {
+  left: 125px;
+  top: 538px;
+  grid-template-columns: auto auto;
+  align-items: end;
+  gap: 22px;
+}
+.v6-home-mail-art { position: relative; isolation: isolate; width: 100px; height: 139px; }
+.v6-home-mail-art::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: #d4ddbb;
+  border: 1px solid #aeb695;
+  border-radius: 2px;
+  transform: rotate(12deg) translate(10px, 2px);
+}
+.v6-home-mail-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+  transform: rotate(-11deg);
+  box-shadow: 3px 8px 14px #49523c34;
+}
+.v6-home-mail .v6-home-object-label { align-self: center; }
+
+.v6-home-object:active .v6-home-object-motion > span { transform: translateY(4px) scale(.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  .v6-home-object-motion > span { transition: none; transform: none !important; }
+}

@@ -1,0 +1,695 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE-v6.1-experience\\v6-experience\\playwright.config.ts",
+    "rootDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.1-experience/v6-experience/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 3
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.1-experience/v6-experience/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "kiosk-1920",
+        "name": "kiosk-1920",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.1-experience/v6-experience/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.1-experience/v6-experience/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "kiosk-1366",
+        "name": "kiosk-1366",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.1-experience/v6-experience/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.49.1",
+    "workers": 3,
+    "webServer": {
+      "command": "npm run preview -- --host 127.0.0.1 --port 4176 --strictPort",
+      "url": "http://127.0.0.1:4176",
+      "reuseExistingServer": true,
+      "timeout": 30000
+    }
+  },
+  "suites": [
+    {
+      "title": "v6-full.spec.ts",
+      "file": "v6-full.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "《拾花一叶》V6 全流程与双分辨率验收",
+          "file": "v6-full.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "HOME 总入口、默认隐藏演示控制台、四径导航与静音控制",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1920",
+                  "projectName": "kiosk-1920",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 1773,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:03.732Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-75ab69215f671b11ef73",
+              "file": "v6-full.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "路线 A：完整屏幕探索（拆信 → 三校筛选 → 详情 → 真 A6 翻面 → 数字收藏 → 衔接 C/D）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1920",
+                  "projectName": "kiosk-1920",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 5325,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:05.723Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-165c0727cc7eda64be5a",
+              "file": "v6-full.spec.ts",
+              "line": 28,
+              "column": 3
+            },
+            {
+              "title": "路线 B：秋千停留三种状态（可用 / 占用中 / 暂关闭）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1920",
+                  "projectName": "kiosk-1920",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 1330,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:11.057Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-d25c55e47a4e3e884532",
+              "file": "v6-full.spec.ts",
+              "line": 70,
+              "column": 3
+            },
+            {
+              "title": "路线 C：实体领卡 01–07 完整流程与 5 类异常分支（暂停不阻断 A/B/D）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1920",
+                  "projectName": "kiosk-1920",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 3538,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:12.393Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-b6bc56bc7b508878e40e",
+              "file": "v6-full.spec.ts",
+              "line": 91,
+              "column": 3
+            },
+            {
+              "title": "路线 D：时光邮局开放全流程（选卡 → 实时背面填写 → 装袋盖章 → 演示回执）与关闭态",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1920",
+                  "projectName": "kiosk-1920",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 3141,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:15.937Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-a929880489406d93580a",
+              "file": "v6-full.spec.ts",
+              "line": 144,
+              "column": 3
+            },
+            {
+              "title": "无操作超时提醒与安全继续机制",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1920",
+                  "projectName": "kiosk-1920",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 2424,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:19.087Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-232ddce69af0a24a8abc",
+              "file": "v6-full.spec.ts",
+              "line": 180,
+              "column": 3
+            },
+            {
+              "title": "HOME 总入口、默认隐藏演示控制台、四径导航与静音控制",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1366",
+                  "projectName": "kiosk-1366",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "status": "passed",
+                      "duration": 1210,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:17.554Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-835c19c095f40a279f1a",
+              "file": "v6-full.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "路线 A：完整屏幕探索（拆信 → 三校筛选 → 详情 → 真 A6 翻面 → 数字收藏 → 衔接 C/D）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1366",
+                  "projectName": "kiosk-1366",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "status": "passed",
+                      "duration": 3451,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:18.895Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-72d450ec9b6a1d43d5f4",
+              "file": "v6-full.spec.ts",
+              "line": 28,
+              "column": 3
+            },
+            {
+              "title": "路线 B：秋千停留三种状态（可用 / 占用中 / 暂关闭）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1366",
+                  "projectName": "kiosk-1366",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "status": "passed",
+                      "duration": 1188,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:22.351Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-bfe1d8b14f46ea08adc3",
+              "file": "v6-full.spec.ts",
+              "line": 70,
+              "column": 3
+            },
+            {
+              "title": "路线 C：实体领卡 01–07 完整流程与 5 类异常分支（暂停不阻断 A/B/D）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1366",
+                  "projectName": "kiosk-1366",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "status": "passed",
+                      "duration": 2826,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:23.545Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-9a4e0d0ce2f734f1e35b",
+              "file": "v6-full.spec.ts",
+              "line": 91,
+              "column": 3
+            },
+            {
+              "title": "路线 D：时光邮局开放全流程（选卡 → 实时背面填写 → 装袋盖章 → 演示回执）与关闭态",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1366",
+                  "projectName": "kiosk-1366",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "status": "passed",
+                      "duration": 2308,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:26.381Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-7ba13af7ad2400fc1586",
+              "file": "v6-full.spec.ts",
+              "line": 144,
+              "column": 3
+            },
+            {
+              "title": "无操作超时提醒与安全继续机制",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "kiosk-1366",
+                  "projectName": "kiosk-1366",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "status": "passed",
+                      "duration": 2371,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-21T15:22:28.695Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d9b134353b3c8246d592-8b680e3fedf70681a5db",
+              "file": "v6-full.spec.ts",
+              "line": 180,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "v6.1-envelope.spec.ts",
+      "file": "v6.1-envelope.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "V6.1 触控连续开信五轮及中途返回恢复",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "kiosk-1920",
+              "projectName": "kiosk-1920",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "passed",
+                  "duration": 23309,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-21T15:22:03.729Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "63718d3171e7c3b01195-4e7e48cd46c98fb39228",
+          "file": "v6.1-envelope.spec.ts",
+          "line": 5,
+          "column": 1
+        },
+        {
+          "title": "V6.1 触控连续开信五轮及中途返回恢复",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "kiosk-1366",
+              "projectName": "kiosk-1366",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "status": "passed",
+                  "duration": 21475,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-21T15:22:22.259Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "63718d3171e7c3b01195-8db55fbf29d246083fee",
+          "file": "v6.1-envelope.spec.ts",
+          "line": 5,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "v6.1-leaf-drop.spec.ts",
+      "file": "v6.1-leaf-drop.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "C 普通访客看灯、等叶落稳并从侧盘取卡",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "kiosk-1920",
+              "projectName": "kiosk-1920",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "status": "passed",
+                  "duration": 5983,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-21T15:22:03.730Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "44571586717588099823-526d5bfc9bc8849849a3",
+          "file": "v6.1-leaf-drop.spec.ts",
+          "line": 20,
+          "column": 1
+        },
+        {
+          "title": "C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、双张、飞偏与遗留",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "kiosk-1920",
+              "projectName": "kiosk-1920",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "status": "passed",
+                  "duration": 6946,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-21T15:22:09.901Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "44571586717588099823-df54a04ab93c94ad9a45",
+          "file": "v6.1-leaf-drop.spec.ts",
+          "line": 48,
+          "column": 1
+        },
+        {
+          "title": "C 普通访客看灯、等叶落稳并从侧盘取卡",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "kiosk-1366",
+              "projectName": "kiosk-1366",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "status": "passed",
+                  "duration": 5033,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-21T15:22:27.923Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "44571586717588099823-8e09dbb0b06057945f25",
+          "file": "v6.1-leaf-drop.spec.ts",
+          "line": 20,
+          "column": 1
+        },
+        {
+          "title": "C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、双张、飞偏与遗留",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "kiosk-1366",
+              "projectName": "kiosk-1366",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "status": "passed",
+                  "duration": 5441,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-21T15:22:33.088Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "44571586717588099823-5673feed17c2ac054df6",
+          "file": "v6.1-leaf-drop.spec.ts",
+          "line": 48,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-21T15:22:02.148Z",
+    "duration": 42400.485,
+    "expected": 18,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
