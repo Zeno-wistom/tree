@@ -1,10 +1,10 @@
 {
   "name": "shihua-yiye-v6",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 5198 --strictPort",
+    "dev": "vite --host 127.0.0.1 --port 5199 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4176",
     "test": "vitest run",

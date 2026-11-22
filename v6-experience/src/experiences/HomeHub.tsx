@@ -1,20 +1,14 @@
-import { useRef, type CSSProperties } from 'react';
+import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { seasonLeaves, type RouteId } from '../data/catalog';
 import { useDemoState } from '../hooks/useDemoState';
 import { useChime } from '../hooks/useChime';
-import { GardenBough } from '../components/GardenBackdrop';
+import { GardenBough, SwingRig } from '../components/GardenBackdrop';
 import { MacauTileBorder } from '../components/MacauOrnaments';
 import './home.css';
 
 gsap.registerPlugin(useGSAP);
-
-const petals = [
-  [16, 12, 14, '#d2a77d'], [28, -4, 17, '#db9e88'], [38, -10, 12, '#bf765c'],
-  [52, -9, 19, '#e0b870'], [66, -14, 12, '#d99184'], [74, -4, 19, '#dec19a'],
-  [83, -11, 18, '#c77c64'], [96, -17, 13, '#d4a47e'],
-] as const;
 
 interface HomeHubProps {
   active: boolean;
@@ -38,7 +32,6 @@ export function HomeHub({ active, onNavigate }: HomeHubProps) {
       const moveX = gsap.quickTo(branches, 'x', { duration: 0.8, ease: 'power2.out' });
       const moveY = gsap.quickTo(branches, 'y', { duration: 0.8, ease: 'power2.out' });
       const lean = gsap.quickTo(branches, 'rotation', { duration: 1.2, ease: 'sine.out' });
-      const drift = gsap.quickTo(stage.querySelector('.v6-home-petals'), 'x', { duration: 1.5, ease: 'sine.out' });
       const followPointer = (event: PointerEvent) => {
         if (stage.inert || event.pointerType !== 'mouse') return;
         const bounds = stage.getBoundingClientRect();
@@ -47,13 +40,11 @@ export function HomeHub({ active, onNavigate }: HomeHubProps) {
         moveX(x * 17);
         moveY(y * 9);
         lean(x * 2.4);
-        drift(x * 46);
       };
       const rest = () => {
         moveX(0);
         moveY(0);
         lean(0);
-        drift(0);
       };
       // Keep the hit areas steady. Only the paper art follows the pointer.
       const magnetCleanups = Array.from(stage.querySelectorAll<HTMLElement>('.v6-home-object')).map((button) => {
@@ -97,12 +88,10 @@ export function HomeHub({ active, onNavigate }: HomeHubProps) {
         <GardenBough className="v6-home-bough" />
       </div>
 
-      <div className="v6-home-petals" aria-hidden="true">
-        {petals.map(([left, delay, duration, color], index) => (
-          <span key={left} style={{ left: `${left}%`, '--delay': `${-delay - 17}s`, '--fall': `${duration}s`,
-            '--petal': color, '--drift': `${65 + index * 22}px` } as CSSProperties}><i /></span>
-        ))}
-      </div>
+      <svg className="v6-home-wind" viewBox="0 0 280 64" fill="none" aria-hidden="true">
+        <path d="M-5 43C50 2 105 1 176 27c37 13 70 11 101-10" stroke="#fffae4" strokeWidth="1.5" />
+        <path d="M26 51c44-24 90-22 131-9 33 10 63 9 87-4" stroke="#788469" strokeOpacity=".57" strokeWidth="1" />
+      </svg>
       <div className="v6-home-intro">
         <p className="v6-home-place">澳门 · 德智广场</p>
         <h1 tabIndex={-1}>拾一片花叶，<br />读一封来信。</h1>
@@ -117,7 +106,9 @@ export function HomeHub({ active, onNavigate }: HomeHubProps) {
         }}
       >
         <span className="v6-home-object-motion" aria-hidden="true">
-          <span className="v6-home-swing-art"><i /></span>
+          <span className="v6-home-swing-art">
+            <svg viewBox="-113 0 226 248" preserveAspectRatio="xMidYMin meet"><SwingRig /></svg>
+          </span>
         </span>
         <span className="v6-home-object-label">秋千停留 <b aria-hidden="true">↗</b></span>
       </button>

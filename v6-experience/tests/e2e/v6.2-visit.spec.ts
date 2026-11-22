@@ -22,7 +22,7 @@ test('B 与 D 正常动效、卡片拖动和离场重置', async ({ page }, test
   await page.getByRole('button', { name: /再看一次轻荡/ }).click();
   await expect.poll(() => page.locator('.v6b-swing-rig').evaluate((node) =>
     getComputedStyle(node).transform)).not.toBe('none');
-  await page.screenshot({ path: `docs/v6.2/${testInfo.project.name}-07-routeB-visitor.png` });
+  await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-07-routeB-visitor.png` });
   await home.click();
   await expect(swing).toBeEnabled();
   await post.click();
@@ -67,7 +67,7 @@ test('C 支持四季主题且访客场景隐藏演示抽屉', async ({ page }, t
     await expect(atlas.locator('figure[data-current] img')).toHaveAttribute('src', new RegExp(season + '-front\\.png$'));
     await expect(page.getByText('C 演示工具', { exact: true })).toHaveCount(0);
     if (season === 'spring') {
-      await page.screenshot({ path: `docs/v6.2/${testInfo.project.name}-08-routeC-visitor.png` });
+      await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-08-routeC-visitor.png` });
     }
   }
 });

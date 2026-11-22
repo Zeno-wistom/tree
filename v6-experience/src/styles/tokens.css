@@ -95,19 +95,13 @@ html, body, #root {
   outline: none;
 }
 
-/* Fixed 1440x810 logical kiosk stage scaled cleanly for 1920x1080 and 1366x768 */
+/* The world fills the screen. Only individual paper and apparatus have local coordinates. */
 .v6-stage {
   position: absolute;
-  width: 1440px;
-  height: 810px;
-  left: calc(50% - 720px);
-  top: calc(50% - 405px);
-  transform: scale(var(--stage-scale, 1));
-  transform-origin: center center;
+  inset: 0;
   overflow: hidden;
-  background: var(--v6-canvas);
+  --gutter: clamp(24px, 4.2vw, 86px);
 }
-
 /* Tactile fine cotton-paper grain overlay */
 .v6-stage::after {
   content: '';
@@ -128,9 +122,9 @@ html, body, #root {
 /* Global persistent kiosk header */
 .v6-header {
   position: absolute;
-  left: 48px;
-  right: 48px;
-  top: 22px;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: clamp(14px, 2.7vh, 32px);
   height: 52px;
   display: flex;
   align-items: center;
@@ -352,58 +346,56 @@ html, body, #root {
     transition-duration: 0.01ms !important;
   }
 }
+/* One paper garden persists behind every route. */
 .v6-garden {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 58% 20%, #fff5d9 0, transparent 48%),
-    radial-gradient(ellipse at 1% 59%, #dce0c3 0, transparent 66%),
-    linear-gradient(150deg, #e2e2c7, #f6efd7 56%, #e9dab7);
+    radial-gradient(ellipse at 58% 29%, #fff8e9 0, transparent 54%),
+    radial-gradient(ellipse at 1% 63%, #bacbb2 0, transparent 66%),
+    linear-gradient(140deg, #dde2cd, #f2ecdc 58%, #e4d3b7);
 }
-.v6-garden::before, .v6-garden::after {
+.v6-garden::before {
   content: '';
   position: absolute;
   inset: 0;
-  pointer-events: none;
-}
-.v6-garden::before {
-  opacity: .37;
-  background:
-    linear-gradient(115deg, transparent 17%, #fff9e3 36%, transparent 58%),
-    radial-gradient(ellipse at 66% 28%, #fff9df 0, transparent 64%);
+  background: linear-gradient(117deg, transparent 28%, #fff9e876 43%, transparent 64%);
 }
 .v6-garden::after {
-  background: url('/assets/v62/macau-tile.svg') repeat left bottom / 88px;
-  mask-image: radial-gradient(ellipse 740px 320px at 100% 105%, #000 0%, transparent 89%);
-  opacity: .56;
+  content: '';
+  position: absolute;
+  inset: auto var(--gutter) 0;
+  height: 17vh;
+  background: url('/assets/v62/macau-tile.svg') repeat left bottom / clamp(54px, 5vw, 86px);
+  mask-image: radial-gradient(ellipse at 82% 110%, #000, transparent 71%);
+  opacity: .32;
 }
 .v6-garden-shadow {
   position: absolute;
-  left: -84px;
-  top: -11px;
-  width: 1520px;
-  transform: rotate(9deg) scaleY(1.76);
-  transform-origin: center top;
-  filter: blur(11px);
-  opacity: .14;
+  left: -8%;
+  top: -2%;
+  width: 113%;
+  height: 53vh;
+  transform: rotate(12deg) scaleY(1.45);
+  transform-origin: top center;
+  filter: blur(13px);
+  opacity: .15;
 }
 .v6-garden-floor {
   position: absolute;
   inset: auto 0 0;
-  height: 160px;
-  background: linear-gradient(0deg, #9c80521a, transparent);
+  height: 34vh;
+  background: linear-gradient(0deg, #6e7e5433, transparent);
 }
-.v6-root[data-route='explore'] .v6-garden-floor { height: 220px; }
-
 .v6-root[data-route='home'] .v6-brand {
-  background: linear-gradient(90deg, #f4ebd7eb, #f4ebd7d4 77%, #f4ebd700);
-  padding-right: 28px;
+  background: linear-gradient(90deg, #f1ead9ef, #f1ead9c9 74%, transparent);
+  padding-right: 23px;
 }
 .v6-root[data-route='explore'] .v6-garden-shadow {
-  opacity: .19;
-  filter: blur(4px);
+  opacity: .13;
+  filter: blur(8px);
 }
 ::view-transition-group(root),
 ::view-transition-old(root),

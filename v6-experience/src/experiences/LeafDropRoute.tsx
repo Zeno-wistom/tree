@@ -1,12 +1,15 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { seasonLeaves, seasonOrder, type RouteId, type SeasonId } from '../data/catalog';
 import { useDemoState } from '../hooks/useDemoState';
+import { useObjectScale } from '../hooks/useObjectScale';
 import { useChime } from '../hooks/useChime';
+import { GardenBough, SwingRig } from '../components/GardenBackdrop';
 import './leafdrop.css';
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, MotionPathPlugin);
 
 type StepNum = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 type TriggerMethod = 'swing' | 'button';
@@ -20,7 +23,7 @@ type ExceptionKind =
   | '05-mechanical'
   | '06-off-target'
   | '07-leftover';
-type ReleaseBlocker = '02-paused' | '02-busy' | '03-04-unsafe';
+type ReleaseBlocker = '02-paused' | '02-busy' | '02-empty' | '03-04-unsafe';
 
 const stepLabels = ['领取意图', '请求受理', '选择触发', '请求与停稳', '枝头预告与飘落', '落盘与取卡提示', '取走与复位'];
 
@@ -60,89 +63,48 @@ function GardenIllustration({ swingMoving }: { swingMoving: boolean }) {
   return (
     <svg className="v6c-garden" viewBox="0 0 824 650" aria-hidden="true">
       <defs>
-        <linearGradient id="v6c-sky" x2=".45" y2="1">
-          <stop stopColor="#9fa994" />
-          <stop offset=".52" stopColor="#efe6c8" />
-          <stop offset="1" stopColor="#b5b18b" />
+        <linearGradient id="v6c-wood" x1="0%" y1="0%" x2="94%" y2="52%">
+          <stop stopColor="#394c3b" />
+          <stop offset=".56" stopColor="#62694d" />
+          <stop offset="1" stopColor="#938568" />
         </linearGradient>
-        <linearGradient id="v6c-bark" x2=".95" y2=".1">
-          <stop stopColor="#343e2d" />
-          <stop offset=".62" stopColor="#57583b" />
-          <stop offset="1" stopColor="#827153" />
-        </linearGradient>
-        <linearGradient id="v6c-court" x2=".58" y2="1">
-          <stop stopColor="#efdfb8" />
-          <stop offset="1" stopColor="#c7aa7e" />
-        </linearGradient>
-        <linearGradient id="v6c-swing-seat" x2=".2" y2="1">
-          <stop stopColor="#ddbc88" />
-          <stop offset="1" stopColor="#85613e" />
-        </linearGradient>
-        <pattern id="v6c-tile" width="26" height="26" patternUnits="userSpaceOnUse">
-          <path fill="#e6d6b4" d="M0 0h26v26H0z" />
-          <path fill="none" stroke="#927c65" strokeWidth=".65" d="M0 0h26v26H0z" />
-          <path fill="#5e7281" d="M13 2 24 13 13 24 2 13Z" />
-          <path fill="#f7edd5" d="M13 5q5 5 0 8 5-5 8 0-5 5-8 0 5 5 0 8-5-5 0-8-5 5-8 0 5-5 8 0-5-5 0-8Z" />
-          <circle cx="13" cy="13" r="1.6" fill="#aa7955" />
+        <radialGradient id="v6c-pool">
+          <stop stopColor="#fff5dd" stopOpacity=".78" />
+          <stop offset="1" stopColor="#fff5dd" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="v6c-seat-shadow">
+          <stop stopColor="#45523a" stopOpacity=".29" />
+          <stop offset="1" stopColor="#45523a" stopOpacity="0" />
+        </radialGradient>
+        <pattern id="v6c-etch" width="5" height="5" patternUnits="userSpaceOnUse">
+          <path d="M-2 5 5-2M2 7l5-5" stroke="#e4dda0" strokeWidth=".6" />
         </pattern>
-        <path id="v6c-frond" d="M0 0C17-18 41-29 68-27 49-10 24 3 0 0Z" />
       </defs>
-
-      <path fill="url(#v6c-sky)" d="M0 0h824v650H0z" />
-      <circle cx="693" cy="235" r="87" fill="#fff3ce" opacity=".65" />
-      <path fill="#9da382" d="M0 272C122 162 222 211 324 288c118 91 220-17 311-25 89-8 139 7 189 41v202H0Z" />
-      <path fill="#79876a" d="M0 336c116-37 175-15 279 8 79 18 144-2 213-43 93-54 201-18 332 33v192H0Z" />
-      <path fill="#acaf8b" d="M579 373c3-40 6-72 14-119l9-20-1 43-8 94Zm159 0 9-137 10-37 6 70 6 111Z" />
-      <path fill="#687759" d="M550 267c22-37 43-48 66-57 15 27 7 54-16 74-17-12-32-10-50-17Zm137-55c13-42 67-57 117-51-9 40-42 65-79 68-5 23-21 32-47 36-14-21-8-38 9-53Z" />
-      <path fill="#b8a886" d="m474 362 350-61v100l-350 55Z" />
-      <path fill="#d9c6a0" d="m461 354 363-63v14l-363 65Z" />
-      <path fill="url(#v6c-tile)" d="m477 376 347-61v33l-347 59Z" />
-      <path fill="#88765c" d="m477 407 347-59v6l-347 59Z" />
-
-      <path fill="#79805d" d="M0 419c110-61 263-61 393-35 82 17 151 45 431 11v255H0Z" />
-      <path fill="#5f6b4f" d="M0 439c99-14 184-38 286-32 112 6 212 39 302 39-55 46-32 124 42 204H0Z" />
-      <path fill="url(#v6c-court)" d="M824 388c-186-3-273 36-350 101-91 77-187 103-346 161h696Z" />
-      <path fill="none" stroke="#f5e5c0" strokeWidth="3" d="M824 400c-156 0-256 35-340 103-98 79-172 98-322 147" />
-      <path fill="none" stroke="#9e8969" strokeWidth="1" opacity=".65" d="M561 431q57 38 82 103t123 116M671 404q41 39 61 85t92 95M448 519q98 21 143 131M398 553q206 1 426-76M285 608q260 21 539-66" />
-      <path fill="#4a5840" d="M0 500c37-34 112-45 168-17-59 17-113 34-168 54Zm0 83c55-21 105-20 180-4L6 650H0Z" />
-      <path fill="#aab181" d="M27 513q25-42 80-39-29 27-80 39Zm12 30q38-30 73-14-26 22-73 14Zm119-74q20-30 66-26-20 18-66 26Zm257-43q-25-24-63-16 25 19 63 16Z" />
-
-      <path fill="url(#v6c-bark)" d="M0 10c40 54 51 109 41 177C27 280 55 352 32 427c-8 27-18 45-32 58h146c-31-24-43-52-39-89 8-82-13-134 14-205 13-36 46-49 86-46 82 7 190 58 293 68 25 2 50 0 78-10l-3-14c-69 1-120-21-185-50C301 99 204 51 141 56 101 59 70 32 57 0H0Z" />
-      <path fill="none" stroke="#b39a6e" strokeWidth="2" opacity=".52" d="M88 79c42-8 103 9 176 42 84 39 181 91 291 75M64 163c-29 102 19 207-14 279m32-270c-28 74 21 185-12 249M140 131c77-13 160 33 204 49" />
-      <path fill="#293a2a" d="M0 0h824v72c-48 9-55 38-103 29-40 31-76 9-95 38-49-11-86 18-132 1-44 15-89-13-123-10-48-15-80-1-121-19-52 13-89-21-127-11C83 108 42 91 0 112Z" />
-      <path fill="#3b5035" d="M0 15c27-8 47 9 71 4 68-14 99 26 138 37 61-2 101 28 151 19-48 30-65 27-106 20-32 22-80-11-113-13C98 102 35 53 0 81Zm427 72c49-36 93-50 155-54 0-14 35-26 85-33h157v38c-52-3-75 25-113 34-34 32-64 11-95 28-83-13-133 28-189-13Z" />
-      <path fill="#4c6040" d="M0 101C55 71 122 88 162 118c-62 20-100 4-162 30Zm151-20c51-22 109 11 136 42-52 0-109-8-136-42Zm186 47c44-23 94-39 150-20-32 31-104 41-150 20Zm256-13c44-25 93-39 128-19-27 31-89 36-128 19Z" />
-      <g fill="#788560" opacity=".72">
-        <use href="#v6c-frond" transform="translate(30 75) rotate(-16)" />
-        <use href="#v6c-frond" transform="translate(119 94) rotate(25) scale(.86)" />
-        <use href="#v6c-frond" transform="translate(230 91) rotate(30) scale(.75)" />
-        <use href="#v6c-frond" transform="translate(353 121) rotate(-11) scale(.57)" />
-        <use href="#v6c-frond" transform="translate(471 109) rotate(-28) scale(.95)" />
-        <use href="#v6c-frond" transform="translate(550 117) rotate(10) scale(.73)" />
-        <use href="#v6c-frond" transform="translate(659 85) rotate(-23)" />
-        <use href="#v6c-frond" transform="translate(727 74) rotate(-21) scale(.83)" />
+      <ellipse cx="495" cy="341" rx="406" ry="276" fill="url(#v6c-pool)" />
+      <GardenBough className="v6c-canopy" x={-178} y={-27} width={1060} height={206} />
+      <path d="M-70 103C26 94 99 77 161 93c93 21 126 63 230 80 66 11 111 15 177 19l-1 13c-66 11-139 3-198-8-104-20-179-57-236-67-64-12-145 31-209 35Z"
+        fill="url(#v6c-wood)" />
+      <path d="M-70 109C24 99 95 86 160 99c86 18 124 63 235 81 63 10 121 20 171 16M-54 143c89-21 139-31 186-23 65 10 114 38 165 50m91 18c54 11 121 18 153 15"
+        fill="none" stroke="#c2b289" strokeOpacity=".77" strokeWidth="1.25" />
+      <path d="M27 110c54-3 75-13 119-6l64 24c-71-17-127-9-191-1Z" fill="url(#v6c-etch)" opacity=".64" />
+      <path d="M483 190q36-46 61-45-2 31-44 47m-77-9q-32-18-35-45 28 6 38 45m-285-56Q104 166 77 152q24-23 64-25"
+        fill="#6c856b" stroke="#526a4d" />
+      <path d="M501 190q17-24 38-40m-116 31q-21-18-30-37m-253-16-55 22" fill="none" stroke="#c6d1a9" strokeWidth="1" />
+      <path d="M564 203q17 2 26-4" fill="none" stroke="#897350" strokeWidth="2" />
+      <path d="M23 483q182-57 381-22t412-32m-769 70q179-47 353-13t416-35m-734 64q152-33 281-12"
+        fill="none" stroke="#817b59" strokeWidth="1" opacity=".36" />
+      <path d="M424 534q147-28 400-42m-419 53q184-33 419-43" fill="none" stroke="#ab8c61" strokeWidth="2" opacity=".56" />
+      <ellipse cx="284" cy="432" rx="119" ry="26" fill="url(#v6c-seat-shadow)" />
+      <g transform="translate(272 153)">
+        <g className={swingMoving ? 'v6c-swing-seat is-moving' : 'v6c-swing-seat'}>
+          <SwingRig anchors={[-23, 15]} />
+        </g>
       </g>
-      <g fill="#596c46">
-        <use href="#v6c-frond" transform="translate(411 190) rotate(70) scale(.65)" />
-        <use href="#v6c-frond" transform="translate(486 204) rotate(43) scale(.65)" />
-        <use href="#v6c-frond" transform="translate(522 202) rotate(-13) scale(.76)" />
-        <use href="#v6c-frond" transform="translate(185 145) rotate(81) scale(.76)" />
-      </g>
-
-      <ellipse cx="310" cy="431" rx="95" ry="15" fill="#39452f" opacity=".25" />
-      <g className={swingMoving ? 'v6c-swing-seat is-moving' : 'v6c-swing-seat'}>
-        <path d="M231 143 257 386m108-205 12 184" fill="none" stroke="#4b4233" strokeWidth="5" />
-        <path d="M231 143 257 386m108-205 12 184" fill="none" stroke="#e2cc9e" strokeWidth="1.5" />
-        <path fill="#725238" d="m235 381 151-24 33 25v10l-151 28-33-26Z" />
-        <path fill="url(#v6c-swing-seat)" stroke="#5f4b35" strokeWidth="1.5" d="m235 381 151-24 33 25-151 28Z" />
-        <path d="m249 387 147-25m-132 36 147-26" stroke="#f8e1b5" opacity=".56" />
-        <circle cx="257" cy="385" r="4" fill="#584e3a" />
-        <circle cx="377" cy="365" r="4" fill="#584e3a" />
-      </g>
-      <path fill="#847458" opacity=".38" d="M529 541c36-19 233-26 267 8s-65 66-153 55c-54-7-151-36-114-63Z" />
-      <path fill="#a78f70" d="M545 484h219l-20 53c-15 37-177 44-194 8Z" />
-      <path fill="url(#v6c-tile)" d="M549 514c47 17 151 14 206-5l-10 29c-54 18-143 21-193 2Z" />
-      <path fill="none" stroke="#e8d7af" strokeWidth="3" d="M549 514c47 17 151 14 206-5m-203 31c50 19 139 16 193-2" />
+      <path d="M121 447h54v5h-54zM135 451h26v57h-26Z" fill="#657267" stroke="#4c5b50" />
+      <path d="M139 455h18v51h-18Z" fill="url(#v6c-etch)" opacity=".56" />
+      <rect x="126" y="425" width="44" height="23" rx="3" fill="#50675b" stroke="#35473c" strokeWidth="1.5" />
+      <ellipse cx="147" cy="433" rx="8" ry="5" fill="#b56c53" stroke="#e0b687" />
+      <path d="M479 525q127-17 337-20l-3 7q-181 1-334 21Z" fill="#77866f" opacity=".47" />
     </svg>
   );
 }
@@ -151,6 +113,8 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
   const root = useRef<HTMLElement>(null);
   const leafCardRef = useRef<HTMLDivElement>(null);
   const trayBedRef = useRef<HTMLDivElement>(null);
+  const theaterRef = useRef<HTMLDivElement>(null);
+  useObjectScale(theaterRef, 824, 650, 1.32);
   const demoDrawerRef = useRef<HTMLDetailsElement>(null);
   const dropTl = useRef<gsap.core.Timeline | null>(null);
   const directionTimer = useRef<number | undefined>(undefined);
@@ -177,7 +141,10 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
   const trayLit = canTake || trayOccupied || exception === '07-leftover';
   const swingUnavailable = trigger === 'swing' && config.swingState !== 'available';
   const requestBlocker = isLeafDropPaused ? '02-paused' : config.deviceStatus === 'busy' ? '02-busy' : null;
-  const releaseBlocker: ReleaseBlocker | null = requestBlocker ?? (swingUnavailable ? '03-04-unsafe' : null);
+  const noCard = config.stockStatus === 'all_empty'
+    || (config.stockStatus === 'current_empty' && activeSeason === config.season);
+  const releaseBlocker: ReleaseBlocker | null = requestBlocker
+    ?? (noCard ? '02-empty' : swingUnavailable ? '03-04-unsafe' : null);
   const latestReleaseBlocker = useRef(releaseBlocker);
 
   useLayoutEffect(() => {
@@ -303,7 +270,7 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const outcome = config.dropOutcome;
-    // Both anchors share the theater as their offset parent and use unscaled stage coordinates.
+    // Both anchors share the apparatus as their offset parent, so flight stays aligned on resize.
     const x = trayBed.offsetLeft + trayBed.offsetWidth / 2 - leaf.offsetLeft - leaf.offsetWidth / 2;
     const y = trayBed.offsetTop + trayBed.offsetHeight / 2 - leaf.offsetTop - leaf.offsetHeight / 2;
 
@@ -344,37 +311,27 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
       }
 
       const offTarget = outcome === 'off_target';
+      const landingX = offTarget ? -149 : x;
+      const landingAngle = offTarget ? -42 : -7;
       if (reduce) {
         timeline.set(leaf, {
-          x: offTarget ? -122 : x,
-          y,
-          rotation: offTarget ? -32 : -6,
-          scale: 0.76,
-          autoAlpha: offTarget ? 0.5 : 1,
+          x: landingX, y, rotation: landingAngle, scale: .55,
+          autoAlpha: offTarget ? .5 : 1,
         });
       } else {
         timeline
-          .call(() => setDropPhase('release'))
-          .to(leaf, { autoAlpha: 1, y: 19, scale: 0.65, duration: 0.38, ease: 'power2.out' })
-          .call(() => setDropPhase('drift'))
-          .to(leaf, { x: -72, y: y * 0.38, rotation: -27, scale: 0.74, duration: 0.65, ease: 'sine.inOut' })
+          .call(() => setDropPhase('release'), [], 0)
           .to(leaf, {
-            x: offTarget ? -105 : x * 0.53,
-            y: y * 0.76,
-            rotation: offTarget ? -25 : 18,
-            scale: 0.82,
-            duration: 0.66,
-            ease: 'sine.inOut',
-          })
+            motionPath: `M0,0 C-5,18 -87,${y * .17} -69,${y * .36} S${landingX + 35},${y * .65} ${landingX},${y}`,
+            duration: 1.88, ease: 'sine.inOut',
+          }, 0)
+          .to(leaf, { autoAlpha: 1, scale: .66, rotation: -29, duration: .53, ease: 'power2.out' }, 0)
+          .call(() => setDropPhase('drift'), [], .38)
+          .to(leaf, { rotation: 18, scale: .72, duration: .71, ease: 'sine.inOut' }, .53)
           .to(leaf, {
-            x: offTarget ? -150 : x,
-            y,
-            rotation: offTarget ? -48 : -6,
-            scale: 0.76,
-            autoAlpha: offTarget ? 0.5 : 1,
-            duration: 0.65,
-            ease: 'power2.out',
-          });
+            rotation: landingAngle, scale: .55,
+            autoAlpha: offTarget ? .5 : 1, duration: .64, ease: 'sine.inOut',
+          }, 1.24);
       }
 
       timeline.call(() => {
@@ -448,6 +405,7 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
       className="v6c"
       ref={root}
       data-step={step}
+      data-trigger={trigger ?? undefined}
       data-exception={exception ?? 'none'}
       data-flight={branchLit ? dropPhase : undefined}
       aria-label="C 实体领卡"
@@ -618,13 +576,6 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
           {canTake && (
             <ActionNote title={<>明信片到了 <span className="v6c-pickup-arrow">→</span> <span className="v6c-title-phrase">侧边取卡盘</span></>}>
               <p>看向亮起的侧盘，沿摆动区外侧前往取卡。</p>
-              <button
-                className="v6c-tray-action"
-                aria-label="取走明信片，确认取走这张叶形卡"
-                onClick={handlePickup}
-              >
-                <span aria-hidden="true">↑</span> 取走明信片
-              </button>
               <div className="v6c-btns">
                 <button
                   className="v6-btn-secondary"
@@ -701,28 +652,40 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
         </footer>
       </div>
 
-      <div className="v6c-theater">
-        <GardenIllustration swingMoving={step === 4 && trigger === 'swing' && !exception} />
-        <div className={'v6c-branch-lamp' + (branchLit ? ' is-on' : '')} aria-hidden="true" />
-        <span className="v6c-branch-label" aria-hidden="true">枝端预告灯</span>
-        <span className="v6c-swing-label" aria-hidden="true">秋千摆动区</span>
+      <div className="v6c-theater" ref={theaterRef}>
+        <div className="v6c-apparatus">
+          <GardenIllustration swingMoving={step === 4 && trigger === 'swing' && !exception} />
+          <div className={'v6c-branch-lamp' + (branchLit ? ' is-on' : '')} aria-hidden="true" />
+          <span className="v6c-branch-label" aria-hidden="true">枝端预告灯</span>
+          <span className="v6c-swing-label" aria-hidden="true">秋千摆动区</span>
+          <span className="v6c-press-label" aria-hidden="true">实体按键</span>
 
-        <div
-          className={'v6c-tray' + (trayLit ? ' is-lit' : '') + (showDirectionHint ? ' is-pulse' : '')}
-          ref={trayBedRef}
-          aria-hidden="true"
-        />
-        <div className="v6c-leaf-card" ref={leafCardRef} aria-hidden={!canTake}>
-          <img
-            src={cardFlipBack ? card.backImage : card.frontImage}
-            alt={card.variety + '叶形卡' + (cardFlipBack ? '背面' : '正面')}
+          <div
+            className={'v6c-tray' + (trayLit ? ' is-lit' : '') + (showDirectionHint ? ' is-pulse' : '')}
+            ref={trayBedRef}
+            aria-hidden="true"
           />
+          <div className="v6c-leaf-card" ref={leafCardRef} aria-hidden={!canTake}>
+            <img
+              src={cardFlipBack ? card.backImage : card.frontImage}
+              alt={card.variety + '叶形卡' + (cardFlipBack ? '背面' : '正面')}
+            />
+          </div>
+          {canTake && (
+                <button
+                  className="v6c-tray-action"
+                  aria-label="取走明信片，确认取走这张叶形卡"
+                  onClick={handlePickup}
+                >
+                  <span aria-hidden="true">↑</span> 取走明信片
+                </button>
+          )}
+          {!canTake && (
+            <span className="v6c-tray-label" aria-hidden="true">
+              {trayLit ? '侧盘待清盘' : '侧边取卡盘'}
+            </span>
+          )}
         </div>
-        {!canTake && (
-          <span className="v6c-tray-label" aria-hidden="true">
-            {trayLit ? '侧盘待清盘' : '侧边取卡盘'}
-          </span>
-        )}
       </div>
     </section>
   );

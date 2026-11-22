@@ -6,7 +6,7 @@ export default defineConfig({
   expect: { timeout: 8_000 },
   fullyParallel: false,
   retries: 0,
-  reporter: [['list'], ['json', { outputFile: 'docs/v6.2/e2e-results.json' }]],
+  reporter: [['list'], ['json', { outputFile: 'docs/v6.2-rebuild/e2e-results.json' }]],
   use: {
     baseURL: 'http://127.0.0.1:4176',
     launchOptions: {
@@ -28,6 +28,16 @@ export default defineConfig({
     {
       name: 'kiosk-1366',
       use: { viewport: { width: 1366, height: 768 } },
+    },
+    {
+      name: 'kiosk-1600',
+      testMatch: '**/v6.2-space.spec.ts',
+      use: { viewport: { width: 1600, height: 900 } },
+    },
+    {
+      name: 'desktop-1440x900',
+      testMatch: '**/v6.2-space.spec.ts',
+      use: { viewport: { width: 1440, height: 900 } },
     },
   ],
 });

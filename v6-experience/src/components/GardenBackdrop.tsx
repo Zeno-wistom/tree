@@ -17,22 +17,25 @@ const blooms = [
   [1153, 89, 19, '#e1ae6e'], [1190, 114, 21, '#e5b88a'], [1225, 79, 17, '#e9bd87'],
 ] as const;
 
-export function GardenBough({ className = '' }: { className?: string }) {
+export function GardenBough({ className = '', ...placement }: {
+  className?: string; x?: number; y?: number; width?: number; height?: number;
+}) {
   const uid = useId();
   const leaf = `${uid}-leaf`;
   const twig = `${uid}-twig`;
 
   return (
-    <svg viewBox="0 0 1440 264" className={className} fill="none" aria-hidden="true">
+    <svg viewBox="0 0 1440 264" className={className} {...placement} preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
       <defs>
-        <linearGradient id={leaf} x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#445d48" />
-          <stop offset="1" stopColor="#88936a" />
+        <linearGradient id={leaf} x1="0%" y1="0%" x2="100%" y2="70%">
+          <stop stopColor="#294f43" />
+          <stop offset="1" stopColor="#8f9d76" />
         </linearGradient>
         <g id={twig}>
           <path d="M0 62Q41 43 55 0" stroke="#586149" strokeWidth="2.7" />
           <path d="M12 54C-17 54-28 35-35 20-10 21 9 32 12 54ZM24 47C23 22 5 14-10 8-5 30 5 43 24 47ZM37 33C31 12 40-9 58-21c4 23-6 43-21 54Z" fill={`url(#${leaf})`} />
-          <path d="M12 54c18 1 39-9 51-22-22-5-44 3-51 22ZM31 42C51 39 75 20 79 7c-21 1-42 14-48 35Z" fill="#6d805d" />
+          <path d="M12 54c18 1 39-9 51-22-22-5-44 3-51 22ZM31 42C51 39 75 20 79 7c-21 1-42 14-48 35Z" fill="#6c856b" />
+          <path d="M-18 33l2-6m3 11 2-8m2 11 3-8m13 17 4-8m-10-7 3-8m5 15 2-7m31-7 6-3m-9 10 8-2m-5 14 6 3m-17-6 5 4" stroke="#d9d9a4" strokeOpacity=".38" strokeWidth=".75" />
           <path d="M12 54-26 26M24 47 1 18M37 33 54-13M14 53q26-9 43-17m-24 4 40-28" stroke="#c4c8a0" strokeOpacity=".53" strokeWidth=".85" />
         </g>
       </defs>
@@ -44,8 +47,8 @@ export function GardenBough({ className = '' }: { className?: string }) {
       ))}
       {blooms.map(([x, y, radius, fill], i) => (
         <g key={x} transform={`translate(${x} ${y}) rotate(${i * 17}) scale(${radius / 25})`}>
-          {[0, 72, 144, 216, 288].map((angle) => (
-            <path key={angle} transform={`rotate(${angle})`}
+          {[0, 76, 153, 220, 294].map((angle) => (
+            <path key={angle} transform={`rotate(${angle}) scale(${.78 + ((angle + i * 11) % 43) / 110})`}
               d="M0 2C-6-2-21-11-15-20c3-5 9-4 14-1 5-5 12-4 16 1C20-12 8-2 0 2Z"
               fill={fill} stroke="#f4e6c5" strokeWidth=".8" />
           ))}
@@ -54,6 +57,47 @@ export function GardenBough({ className = '' }: { className?: string }) {
         </g>
       ))}
     </svg>
+  );
+}
+
+export function SwingRig({ state = 'available', anchors = [0, 0] }: {
+  state?: 'available' | 'occupied' | 'closed'; anchors?: [number, number];
+}) {
+  const wood = useId();
+  const ropes = `M-79 ${anchors[0]}-81 225M77 ${anchors[1]}l2 ${225 - anchors[1]}`;
+  return (
+    <>
+      <defs>
+        <linearGradient id={wood} x1="0%" y1="0%" x2="29%" y2="100%">
+          <stop stopColor="#c3a17a" />
+          <stop offset="1" stopColor="#997354" />
+        </linearGradient>
+      </defs>
+      <g fill="none" strokeLinecap="round">
+        <path d={ropes} stroke="#524f36" strokeWidth="4" />
+        <path d={ropes} stroke="#dfc49b" strokeWidth="1.55" />
+        <path d={ropes} stroke="#6f5b42" strokeWidth="1.1" strokeDasharray="1 4" />
+      </g>
+      <g fill="#59624d" stroke="#c3bb94" strokeWidth="1.3">
+        <ellipse cx="-79" cy={anchors[0] + 1} rx="4" ry="7" />
+        <ellipse cx="77" cy={anchors[1] + 1} rx="4" ry="7" />
+      </g>
+      {state === 'occupied' && (
+        <path d="M-32 225c3-15 12-34 22-43-17-9-20-32-6-44 9-7 23-7 31 2 13 16 9 33-5 42 12 9 17 24 22 43Z" fill="#4c6754" />
+      )}
+      <path d="m-105 232 211-2-4 10-203 3Z" fill="#654c34" stroke="#594430" />
+      <path d="m-86 217 171-2 21 15-211 2Z" fill={`url(#${wood})`} stroke="#614c35" strokeLinejoin="round" />
+      <path d="m-87 226 162-3m-90-2 62-1m-129 15 178-3" fill="none" stroke="#e7cba0" opacity=".62" />
+      <circle cx="-81" cy="223" r="3" fill="#4b4c35" />
+      <circle cx="79" cy="221" r="3" fill="#4b4c35" />
+      {state === 'closed' && (
+        <g transform="translate(-25 216) rotate(-5)">
+          <path d="m8 1 18-14L46 1" fill="none" stroke="#624739" />
+          <rect width="50" height="33" rx="2" fill="#814138" />
+          <path d="M22 15v-4a3 3 0 0 1 6 0v4m-8 0h10v8H20Z" fill="none" stroke="#f5eedb" strokeWidth="1.5" />
+        </g>
+      )}
+    </>
   );
 }
 

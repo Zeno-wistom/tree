@@ -6,22 +6,14 @@
   --post-blue: #465e6c;
   --paper-light: #fcf3dd;
   position: absolute;
-  inset: 92px 48px 67px;
+  inset: max(78px, 10.5vh) var(--gutter) max(23px, 4vh);
   isolation: isolate;
   color: var(--post-ink);
 }
 
-.v6d::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: -92px -48px -67px;
-  background: radial-gradient(ellipse at 30% 20%, #fff6e3, #eee5d0 78%);
-}
-
 .v6d-layout {
   display: grid;
-  grid-template-columns: 430px minmax(0, 1fr);
+  grid-template-columns: minmax(310px, .91fr) minmax(0, 1.65fr);
   grid-template-rows: minmax(0, 1fr);
   align-items: stretch;
   gap: 30px;
@@ -29,7 +21,7 @@
 }
 
 .v6d-layout--wide {
-  grid-template-columns: 548px minmax(0, 1fr);
+  grid-template-columns: minmax(430px, 1fr) minmax(0, 1.33fr);
   gap: 32px;
 }
 
@@ -58,7 +50,7 @@
 .v6d-copy h1 {
   margin-top: 17px;
   font-family: var(--v6-serif);
-  font-size: 55px;
+  font-size: clamp(42px, min(3.84vw, 6.55vh), 65px);
   font-weight: 700;
   line-height: 1.18;
   letter-spacing: -0.035em;
@@ -66,7 +58,7 @@
 }
 
 .v6d-layout--wide h1 {
-  font-size: 47px;
+  font-size: clamp(35px, min(3.26vw, 6.15vh), 56px);
 }
 
 .v6d-copy .v6d-intro {
@@ -210,11 +202,11 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  border: 1px solid #a69979;
+  border: 1px solid #a39e8259;
   border-radius: 3px;
   background:
     url('/assets/v5/grain.svg') 0 0 / 238px,
-    radial-gradient(ellipse at 40% 69%, #f5e7bf 6%, #dfcb9b 49%, #979064 75%, #424a33 100%);
+    radial-gradient(ellipse at 43% 57%, #f4e9cf 7%, #e2d5b6 51%, #b8bf9b 76%, #879d82 100%);
   box-shadow: 0 4px 0 #a797762e, 0 18px 31px -21px #3d452ca3;
 }
 
@@ -337,7 +329,7 @@
 
 .v6d-card-stack {
   position: relative;
-  height: 475px;
+  height: clamp(330px, 56vh, 620px);
   isolation: isolate;
 }
 
@@ -601,7 +593,7 @@
 
 .v6d-back-frame {
   position: relative;
-  height: 514px;
+  height: min(514px, 66vh);
   translate: 38px -2px;
   overflow: hidden;
   border: 1px solid #d5c8a7;
@@ -637,12 +629,13 @@
 }
 
 .v6d-back-frame[data-series='season'] .v6d-live-msg {
-  top: 26.8%;
+  top: 28.7%;
+  height: 35.1%;
   line-height: 27.4px;
 }
 
 .v6d-live-msg::placeholder { color: #646451; }
-.v6-root .v6d-live-msg:focus-visible { outline: 2px solid var(--post-blue); outline-offset: 3px; }
+.v6-root .v6d-live-msg:focus-visible { outline: 2px solid var(--post-blue); outline-offset: 1px; }
 .v6d-message-count {
   position: absolute;
   top: 65.6%;

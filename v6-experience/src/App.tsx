@@ -105,17 +105,6 @@ function KioskShell() {
     previousFocus.current?.focus({ preventScroll: true });
   }, []);
 
-  // Scale 1440x810 logical kiosk stage to viewport (1920x1080, 1366x768, etc.)
-  useEffect(() => {
-    const resize = () => {
-      const scale = Math.min(window.innerWidth / 1440, window.innerHeight / 810);
-      rootRef.current?.style.setProperty('--stage-scale', String(scale));
-    };
-    resize();
-    window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
-  }, []);
-
   // 90s idle + 15s countdown (supports ?idle=<ms> for E2E verification)
   useEffect(() => {
     const el = rootRef.current;

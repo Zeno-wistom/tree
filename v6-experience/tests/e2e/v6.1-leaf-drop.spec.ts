@@ -42,7 +42,7 @@ test('C 普通访客看灯、等叶落稳并从侧盘取卡', async ({ page }, t
     return Math.hypot(leaf.x + leaf.width / 2 - tray.x - tray.width / 2, leaf.y + leaf.height / 2 - tray.y - tray.height / 2);
   });
   expect(landingOffset).toBeLessThan(3);
-  await page.screenshot({ path: `docs/v6.2/${testInfo.project.name}-16-routeC-visitor-landed.png` });
+  await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-16-routeC-visitor-landed.png` });
   await page.getByRole('button', { name: /确认取走这张叶形卡/ }).click();
   await expect(leafScene).toHaveAttribute('data-step', '7');
   await expect(page.getByRole('heading', { name: /已取走/ })).toBeVisible();

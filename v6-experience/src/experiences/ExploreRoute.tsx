@@ -6,6 +6,7 @@ import {
   dateLabel, events, getSchool, schools, timeLabel,
   type CampusEvent, type RouteId, type SchoolId,
 } from '../data/catalog';
+import { useObjectScale } from '../hooks/useObjectScale';
 import { useChime } from '../hooks/useChime';
 import { MacauTileBorder, MacauTileDiamond } from '../components/MacauOrnaments';
 import { HomeHub } from './HomeHub';
@@ -18,12 +19,14 @@ type Filter = { school: 'all' | SchoolId; batch: number };
 
 const FIRST: Filter = { school: 'all', batch: 0 };
 const PAGE_SIZE = 3;
-const DOCK = 413;
-const READING_DOCK = 636;
+const DISCOVER_POSE = { x: 125, y: 259, scale: .76, rotation: 0 };
+const READING_POSE = { x: -137, y: 444, scale: .36, rotation: 0 };
 const CARD_HEIGHT = 254 * 1091 / 774;
-const HOME_POSE = { x: 306, y: 187, scale: 0.665, rotation: -7 };
+const HOME_POSE = { x: 267, y: 181, scale: 0.685, rotation: -7 };
+const COLLECTION_POSE = { x: -74, y: 319, scale: .65, rotation: 0 };
 const CARD_REST = { x: 0, y: 180, rotation: 0, scale: 1, autoAlpha: 0 };
 const SHELL = '.v6a-envelope-shadow, .v6a-envelope-back, .v6a-envelope-lining, .v6a-pocket';
+const PRINT = '.v6a-stamp-mark, .v6a-stamp-tool';
 const OVERLAYS = '.v6a-discover-ui, .v6a-reading-ui, .v6a-collection';
 
 interface ExploreRouteProps {
@@ -37,10 +40,10 @@ interface ExploreRouteProps {
 function fanPose(index: number, count: number, lifted = false) {
   const offset = index - (count - 1) / 2;
   return {
-    x: offset * 267,
-    y: -322 + Math.abs(offset) * 24 - (lifted ? 18 : 0),
+    x: offset * 334,
+    y: -238 + Math.abs(offset) * 18 - (lifted ? 18 : 0),
     rotation: offset * 9 + (lifted ? offset * -3 : 0),
-    scale: lifted ? 1.04 : 1,
+    scale: lifted ? 1.26 : 1.22,
   };
 }
 
@@ -74,10 +77,12 @@ function EventCard({ item, selected, front, clickable, collected, onHover, onRea
           </div>
           <div className="v6a-card-face v6a-card-art" aria-hidden={!selected || !front}>
             <img src={school.frontImage} alt={`${school.name} · ${school.flower}明信片正面`} draggable={false} />
+            <div className="v6a-stamp-mark" aria-hidden="true"><MacauTileDiamond primary="#964b34" secondary="#964b34" paper="transparent" />拾花一叶</div>
           </div>
         </div>
         <span className="v6a-card-light" aria-hidden="true" />
       </div>
+      <div className="v6a-stamp-tool" aria-hidden="true"><i /><i /></div>
       <button
         type="button"
         className="v6a-event-hit"
@@ -99,6 +104,7 @@ function EventCard({ item, selected, front, clickable, collected, onHover, onRea
 export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActivity }: ExploreRouteProps) {
   const root = useRef<HTMLElement>(null);
   const envelope = useRef<HTMLDivElement>(null);
+  useObjectScale(root, 1440, 810, 1.22);
   const timeline = useRef<gsap.core.Timeline | null>(null);
   const hoverTweens = useRef<gsap.core.Tween[]>([]);
   const tilt = useRef<{ x: ReturnType<typeof gsap.quickTo>; y: ReturnType<typeof gsap.quickTo> } | null>(null);
@@ -149,7 +155,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     gsap.set(findAll('.v6a-card-turn'), { rotateY: 0 });
     gsap.set(cards(), CARD_REST);
     gsap.set(findAll(SHELL), { y: 0, autoAlpha: 1 });
-    gsap.set(findAll(OVERLAYS), { autoAlpha: 0 });
+    gsap.set(findAll(OVERLAYS + ', ' + PRINT), { autoAlpha: 0 });
     setAnimating(false);
     setScene('IDLE');
   };
@@ -166,10 +172,49 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       }
       if (media.matches) stopTilt();
     };
+    const wind = root.current?.querySelector<SVGElement>('.v6-home-wind');
+    const sealPaper = find('.v6a-seal-paper');
+    const bough = root.current?.querySelector<SVGElement>('.v6-home-bough');
+    const gust = { force: 0 };
+    const breeze = gsap.matchMedia();
+    breeze.add('(prefers-reduced-motion: no-preference)', () => {
+      if (!sealPaper || !wind || !bough) return;
+      const lift = gsap.quickSetter(sealPaper, 'rotationX', 'deg');
+      const trace = gsap.quickSetter(wind, 'opacity');
+      const bend = gsap.quickSetter(bough, 'rotation', 'deg');
+      const setGust = gsap.quickTo(gust, 'force', { duration: .8, ease: 'sine.out' });
+      const onMove = (event: globalThis.PointerEvent) => {
+        if (event.pointerType !== 'mouse' || phaseRef.current !== 'IDLE') return;
+        const seal = sealPaper?.getBoundingClientRect();
+        if (!seal) return;
+        const distance = Math.hypot(event.clientX - (seal.left + seal.width / 2), event.clientY - (seal.top + seal.height / 2));
+        setGust(Math.max(0, 1 - distance / 230));
+      };
+      const onLeave = () => setGust(0);
+      const paint = (time: number) => {
+        if (phaseRef.current !== 'IDLE' || document.hidden) return;
+        const swell = Math.max(0, Math.sin(time * .91) * .64 + Math.sin(time * 1.63 - .9) * .36);
+        const force = Math.min(1.25, swell + gust.force * .79);
+        lift(2 + force * 21);
+        bend(force * .64 + Math.sin(time * .57) * .42);
+        trace(Math.max(0, force - .3) * .65);
+        wind?.style.setProperty('--wind-travel', `${-68 - force * 72}px`);
+      };
+      root.current?.addEventListener('pointermove', onMove, { passive: true });
+      root.current?.addEventListener('pointerleave', onLeave);
+      gsap.ticker.add(paint);
+      return () => {
+        root.current?.removeEventListener('pointermove', onMove);
+        root.current?.removeEventListener('pointerleave', onLeave);
+        gsap.ticker.remove(paint);
+        gsap.set([sealPaper, wind, bough].filter(Boolean), { clearProps: 'transform,opacity' });
+      };
+    });
     const onVisibility = () => timeline.current?.paused(document.hidden);
     media.addEventListener('change', onReduce);
     document.addEventListener('visibilitychange', onVisibility);
     return () => {
+      breeze.revert();
       media.removeEventListener('change', onReduce);
       document.removeEventListener('visibilitychange', onVisibility);
       timeline.current?.kill();
@@ -213,22 +258,11 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     const clearScene = findAll(OVERLAYS);
     const next = nextTimeline(() => { restore(); focus('.v6a-open'); });
 
-    if (Number(gsap.getProperty(find('.v6a-pocket'), 'opacity')) < .5) {
-      next
-        .to(clearScene.concat(cards()), { autoAlpha: 0, duration: .26, ease: 'sine.inOut' })
-        .set(envelope.current, { ...HOME_POSE, autoAlpha: 0 })
-        .set(findAll(SHELL), { y: 0, autoAlpha: 1 })
-        .set(lid, { rotateX: 0, zIndex: 9, autoAlpha: 1 })
-        .set(seal, { x: 0, y: 0, rotate: 0, autoAlpha: 1 })
-        .set(find('.v6a-seal-leaf'), { rotateX: 0 })
-        .to(findAll('.v6-home, .v6a-open-hint, .v6a-envelope'), { autoAlpha: 1, duration: .32 });
-      return;
-    }
-
     // Return without remounting the letter. The pocket shields the tucked cards.
     next
       .to(clearScene, { autoAlpha: 0, duration: .21 }, 0)
-      .to(cards(), { x: 0, y: 143, scale: .92, rotation: 0, autoAlpha: 0, duration: .43, ease: 'power2.in' }, 0)
+      .to(cards(), { x: 0, y: 175, scale: .96, rotation: 0, duration: .39, ease: 'power2.in' }, 0)
+      .set(cards(), { autoAlpha: 0 }, .39)
       .to(findAll(SHELL), { y: 0, autoAlpha: 1, duration: .2 }, 0)
       .to(lid, { autoAlpha: 1, rotateX: 90, duration: .26, ease: 'sine.in' }, .18)
       .set(lid, { zIndex: 9 }, .44)
@@ -245,7 +279,8 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       x: (i: number) => fanPose(i, nodes.length).x,
       y: (i: number) => fanPose(i, nodes.length).y,
       rotation: (i: number) => fanPose(i, nodes.length).rotation,
-      scale: 1, autoAlpha: 1, duration: 0.60, stagger: 0.048, ease: 'power2.out',
+      scale: (i: number) => fanPose(i, nodes.length).scale,
+      autoAlpha: 1, duration: 0.58, stagger: 0.048, ease: 'power2.out',
     }, position);
 
   const openEnvelope = () => {
@@ -260,25 +295,25 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     next.eventCallback('onReverseComplete', () => { restore(); focus('.v6a-open'); });
 
     next
-      .addLabel('sink', 0.19)
-      .addLabel('peel', 0.93)
-      .addLabel('hinge', 1.15)
-      .addLabel('extract', 1.58)
+      .addLabel('peel', 0)
+      .addLabel('hinge', .07)
+      .addLabel('sink', .10)
+      .addLabel('extract', .43)
       .set(paper, CARD_REST, 0)
-      .to(envelope.current, { scale: 0.7, duration: 0.19, ease: 'power2.out' }, 0)
-      .to(find('.v6a-open-hint'), { autoAlpha: 0, duration: 0.2 }, 0)
-      .to(envelope.current, { x: 0, y: DOCK, scale: 1, rotation: 0, duration: 0.8, ease: 'sine.inOut' }, 'sink')
-      .to(find('.v6-home'), { autoAlpha: 0, duration: 0.58, ease: 'sine.inOut' }, 'sink')
-      .to(find('.v6a-seal-leaf'), { rotateX: 56, duration: 0.35, ease: 'power2.out' }, 'peel')
-      .to(seal, { x: 35, y: -29, rotation: 17, duration: 0.29, ease: 'power2.out' }, 'peel')
-      .to(seal, { x: 125, y: 37, rotation: 48, autoAlpha: 0, duration: 0.4, ease: 'power1.in' }, 'hinge')
-      .to(lid, { rotateX: 90, duration: 0.30, ease: 'sine.in' }, 'hinge')
-      .set(lid, { zIndex: 2 }, 'hinge+=0.30')
-      .to(lid, { rotateX: 174, duration: 0.30, ease: 'sine.out' }, 'hinge+=0.30')
-      .set(paper, { autoAlpha: 1 }, 'extract')
-      .to(paper, { y: -180, duration: 0.5, stagger: 0.045, ease: 'power2.inOut' }, 'extract')
-      .to(findAll('.v6a-discover-ui'), { autoAlpha: 1, duration: 0.42 }, 'extract+=0.65');
-    motionToFan(next, paper, 'extract+=0.50');
+      .to(envelope.current, { scale: .71, duration: .10, ease: 'power2.out' }, 0)
+      .to(find('.v6a-open-hint'), { autoAlpha: 0, duration: .16 }, 0)
+      .to(find('.v6a-seal-leaf'), { rotateX: 58, duration: .24, ease: 'power2.out' }, 'peel')
+      .to(seal, { x: 34, y: -20, rotation: 17, duration: .23, ease: 'power2.out' }, 'peel')
+      .to(envelope.current, { ...DISCOVER_POSE, duration: .92, ease: 'sine.inOut' }, 'sink')
+      .to(find('.v6-home'), { autoAlpha: 0, duration: .56, ease: 'sine.inOut' }, 'sink')
+      .to(seal, { x: 114, y: 27, rotation: 46, autoAlpha: 0, duration: .35, ease: 'power1.in' }, .23)
+      .to(lid, { rotateX: 90, duration: .27, ease: 'sine.inOut' }, 'hinge')
+      .set(lid, { zIndex: 2 }, 'hinge+=.27')
+      .to(lid, { rotateX: 174, duration: .39, ease: 'sine.out' }, 'hinge+=.27')
+      .set(paper, { x: (i: number) => (i - (paper.length - 1) / 2) * 24, autoAlpha: 1 }, 'extract')
+      .to(paper, { y: -151, duration: .46, stagger: .033, ease: 'sine.inOut' }, 'extract')
+      .to(findAll('.v6a-discover-ui'), { autoAlpha: 1, duration: .35 }, .91);
+    motionToFan(next, paper, .86);
   };
 
   const hoverCard = (id: string | null) => {
@@ -303,9 +338,12 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       .to(findAll('.v6a-discover-ui'), { autoAlpha: 0, duration: 0.2 }, 0)
       .to(cards().filter((node) => node !== chosen), { y: 170, autoAlpha: 0, duration: 0.43, stagger: 0.04, ease: 'power2.in' }, 0)
       .set(chosen, { zIndex: 7 }, 0)
-      .to(envelope.current, { y: READING_DOCK, duration: 0.71, ease: 'power2.inOut' }, 0)
-      .to(find('.v6a-envelope-flap'), { autoAlpha: 0, duration: 0.32 }, 0.25)
-      .to(chosen, { x: 0, y: 418 - 128 - READING_DOCK - CARD_HEIGHT / 2, rotation: -1.4, scale: 1.63, duration: 0.71, ease: 'power2.inOut' }, 0)
+      .to(envelope.current, { ...READING_POSE, duration: 0.68, ease: 'power2.inOut' }, 0)
+      .to(chosen, {
+        x: (520 - READING_POSE.x) / READING_POSE.scale - 520,
+        y: (290 - READING_POSE.y) / READING_POSE.scale - CARD_HEIGHT / 2,
+        rotation: -1.4, scale: 1.61 / READING_POSE.scale, duration: .68, ease: 'power2.inOut',
+      }, 0)
       .to(findAll('.v6a-reading-ui'), { autoAlpha: 1, duration: 0.31 }, 0.54);
   };
 
@@ -356,8 +394,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     next
       .to(findAll('.v6a-reading-ui'), { autoAlpha: 0, duration: 0.18 }, 0)
       .to(node.querySelector('.v6a-card-turn'), { rotateY: 0, duration: 0.41, ease: 'power2.inOut' }, 0)
-      .to(envelope.current, { y: DOCK, duration: 0.63, ease: 'power2.inOut' }, 0)
-      .to(find('.v6a-envelope-flap'), { autoAlpha: 1, duration: 0.32 }, 0.22)
+      .to(envelope.current, { ...DISCOVER_POSE, duration: 0.63, ease: 'power2.inOut' }, 0)
       .to(findAll('.v6a-discover-ui'), { autoAlpha: 1, duration: 0.34 }, 0.46);
     motionToFan(next, cards(), 0.12);
   };
@@ -367,24 +404,25 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     const node = cardNode(current.id);
     if (!node) return;
     const next = nextTimeline(() => { onCollect(current.id); setScene('COMPLETE'); focus('.v6a-complete-copy h1'); });
-    const sleeve = findAll('.v6a-sleeve-back, .v6a-sleeve-front, .v6a-stamp-mark');
+    const stamp = node.querySelector('.v6a-stamp-tool');
+    const impression = node.querySelector('.v6a-stamp-mark');
     next
-      .to(findAll('.v6a-reading-ui'), { autoAlpha: 0, duration: 0.2 }, 0)
-      .to(findAll(SHELL), { y: 85, autoAlpha: 0, duration: 0.51, ease: 'power2.in' }, 0)
-      .set(sleeve, { y: 94, autoAlpha: 1 }, 0)
-      .set(find('.v6a-stamp-mark'), { autoAlpha: 0 }, 0)
-      .set(find('.v6a-stamp-tool'), { y: -100, scale: 1.24, autoAlpha: 0 }, 0)
-      .to(sleeve, { y: 0, duration: 0.53, ease: 'power3.out' }, 0)
-      .to(node.querySelector('.v6a-card-turn'), { rotateY: -180, duration: 0.47, ease: 'power2.inOut' }, 0)
-      .to(node, { x: -241, y: -591, scale: 1.14, rotation: 0, duration: 0.64, ease: 'power2.inOut' }, 0.04)
-      .to(node, { y: -528, duration: 0.46, ease: 'power2.in' }, 0.69)
-      .to(find('.v6a-stamp-tool'), { y: 0, rotation: -8, scale: 1, autoAlpha: 1, duration: 0.25, ease: 'power3.in' }, 1.03)
-      .addLabel('impact', 1.28)
-      .call(() => play('stamp'), [], 'impact')
-      .set(find('.v6a-stamp-mark'), { autoAlpha: 1 }, 'impact')
-      .to(sleeve, { y: 3, duration: 0.09, yoyo: true, repeat: 1 }, 'impact')
-      .to(find('.v6a-stamp-tool'), { y: -39, rotation: -13, autoAlpha: 0, duration: 0.3, ease: 'power2.out' }, 'impact+=0.07')
-      .to(find('.v6a-complete-copy'), { autoAlpha: 1, duration: 0.42 }, 'impact');
+      .addLabel('strike', .79)
+      .addLabel('tuck', 1.02)
+      .to(findAll('.v6a-reading-ui'), { autoAlpha: 0, duration: .2 }, 0)
+      // Lift the card clear of the lip before moving it laterally over the mouth.
+      .to(node, { y: -718, scale: 3.05, rotation: 0, duration: .23, ease: 'power2.out' }, 0)
+      .to(envelope.current, { ...COLLECTION_POSE, duration: .43, ease: 'sine.inOut' }, .23)
+      .to(node.querySelector('.v6a-card-turn'), { rotateY: -180, duration: .48, ease: 'power2.inOut' }, .03)
+      .to(node, { x: 0, y: -373, scale: 1.52, duration: .43, ease: 'sine.inOut' }, .23)
+      .set(stamp, { y: -86, scale: 1.2, rotation: 0, autoAlpha: 0 }, 0)
+      .to(stamp, { y: 0, scale: 1, autoAlpha: 1, duration: .22, ease: 'power3.in' }, 'strike-=.22')
+      .call(() => play('stamp'), [], 'strike')
+      .set(impression, { autoAlpha: 1 }, 'strike')
+      .to(node, { y: -369, duration: .055, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 'strike')
+      .to(stamp, { y: -50, rotation: -9, autoAlpha: 0, duration: .25, ease: 'power2.out' }, 'strike+=.04')
+      .to(node, { y: 91, duration: .54, ease: 'power2.inOut' }, 'tuck')
+      .to(find('.v6a-complete-copy'), { autoAlpha: 1, duration: .35 }, 'tuck+=.31');
   };
 
   const changeFilter = (next: Filter) => {
@@ -423,55 +461,58 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
         ))}
       </nav>
 
-      <div className="v6a-envelope" ref={envelope}>
-        <div className="v6a-envelope-shadow" />
-        <div className="v6a-envelope-back" />
-        <div className="v6a-envelope-lining" />
-        <div className="v6a-envelope-flap">
-          <div className="v6a-flap-front" aria-hidden="true">
-            <svg viewBox="0 0 1040 300" preserveAspectRatio="none">
-              <path d="M4 0h1032L520 300 4 0Z" fill="#eee4cd" stroke="#b4a67d" strokeWidth="2" />
-              <path d="M26 7h988L520 283 26 7Z" fill="#f7eed9" stroke="#d4c7a8" />
-            </svg>
-            <div className="v6a-cover"><span>从德智树下寄出</span><strong>校园来信</strong></div>
+      <div className="v6a-paper-space">
+        <div className="v6a-envelope" ref={envelope}>
+          <div className="v6a-envelope-shadow" />
+          <div className="v6a-envelope-back" />
+          <div className="v6a-envelope-lining" />
+          <div className="v6a-envelope-flap">
+            <div className="v6a-flap-front" aria-hidden="true">
+              <svg viewBox="0 0 1040 300" preserveAspectRatio="none">
+                <path d="M4 0h1032L520 300 4 0Z" fill="#eee4cd" stroke="#b4a67d" strokeWidth="2" />
+                <path d="M26 7h988L520 283 26 7Z" fill="#f7eed9" stroke="#d4c7a8" />
+              </svg>
+              <div className="v6a-cover"><span>从德智树下寄出</span><strong>校园来信</strong></div>
+            </div>
+            <div className="v6a-flap-back" aria-hidden="true">
+              <svg viewBox="0 0 1040 300" preserveAspectRatio="none">
+                <path d="M4 0h1032L520 300 4 0Z" fill="#d8ddc3" stroke="#a6a78b" strokeWidth="2" />
+                <path d="M27 6h986L520 279 27 6Z" fill="none" stroke="#eee8cf" />
+              </svg>
+            </div>
           </div>
-          <div className="v6a-flap-back" aria-hidden="true">
-            <svg viewBox="0 0 1040 300" preserveAspectRatio="none">
-              <path d="M4 0h1032L520 300 4 0Z" fill="#d8ddc3" stroke="#a6a78b" strokeWidth="2" />
-              <path d="M27 6h986L520 279 27 6Z" fill="none" stroke="#eee8cf" />
-            </svg>
+
+          <div className="v6a-fan" hidden={phase === 'IDLE'}>
+            {shown.map((item) => {
+              const reading = phase === 'POSTCARD' && current?.id === item.id;
+              return (
+                <EventCard key={item.id} item={item} selected={reading} front={front && current?.id === item.id}
+                  collected={collected.has(item.id)}
+                  clickable={!busy && (phase === 'DISCOVER' || reading)}
+                  onHover={hoverCard} onRead={reading ? flip : () => readCard(item)}
+                  onTilt={tiltCard} onRest={() => { tilt.current?.x(0); tilt.current?.y(0); }}
+                />
+              );
+            })}
           </div>
+          <div className="v6a-pocket" aria-hidden="true">
+            <svg viewBox="0 0 1040 552" preserveAspectRatio="none">
+              <path d="M0 6 520 165 1040 6v530q0 16-16 16H16Q0 552 0 536Z" fill="#f6eed9" stroke="#c8b791" strokeWidth="2" />
+              <path d="M7 545 372 121M1033 545 668 121" fill="none" stroke="#dacaa6" strokeWidth="2" />
+              <path d="M12 22 520 178 1028 22" fill="none" stroke="#fffaea" strokeWidth="3" />
+            </svg>
+            <MacauTileBorder className="v6a-pocket-tile" bg="#426258" stroke="#f5ebd6" accent="#d0ac66" />
+          </div>
+          <div className="v6a-seal" aria-hidden="true">
+            <div className="v6a-seal-leaf"><div className="v6a-seal-paper"><MacauTileDiamond /></div></div>
+          </div>
+          <button className="v6a-open" onClick={openEnvelope} disabled={phase !== 'IDLE' || busy}
+            aria-label={atHome ? 'A 屏幕探索：轻触拆开校园来信' : '打开校园来信'}
+          >
+            <span className="v6a-open-hint">揭开叶封 <b aria-hidden="true">↗</b></span>
+          </button>
         </div>
 
-        <div className="v6a-fan" hidden={phase === 'IDLE'}>
-          {shown.map((item) => {
-            const reading = phase === 'POSTCARD' && current?.id === item.id;
-            return (
-              <EventCard key={item.id} item={item} selected={reading} front={front && current?.id === item.id}
-                collected={collected.has(item.id)}
-                clickable={!busy && (phase === 'DISCOVER' || reading)}
-                onHover={hoverCard} onRead={reading ? flip : () => readCard(item)}
-                onTilt={tiltCard} onRest={() => { tilt.current?.x(0); tilt.current?.y(0); }}
-              />
-            );
-          })}
-        </div>
-        <div className="v6a-pocket" aria-hidden="true">
-          <svg viewBox="0 0 1040 552" preserveAspectRatio="none">
-            <path d="M0 6 520 165 1040 6v530q0 16-16 16H16Q0 552 0 536Z" fill="#f6eed9" stroke="#c8b791" strokeWidth="2" />
-            <path d="M7 545 372 121M1033 545 668 121" fill="none" stroke="#dacaa6" strokeWidth="2" />
-            <path d="M12 22 520 178 1028 22" fill="none" stroke="#fffaea" strokeWidth="3" />
-          </svg>
-          <MacauTileBorder className="v6a-pocket-tile" bg="#426258" stroke="#f5ebd6" accent="#d0ac66" />
-        </div>
-        <div className="v6a-seal" aria-hidden="true">
-          <div className="v6a-seal-leaf"><div className="v6a-seal-paper"><MacauTileDiamond /></div></div>
-        </div>
-        <button className="v6a-open" onClick={openEnvelope} disabled={phase !== 'IDLE' || busy}
-          aria-label={atHome ? 'A 屏幕探索：轻触拆开校园来信' : '打开校园来信'}
-        >
-          <span className="v6a-open-hint">揭开叶封 <b aria-hidden="true">↗</b></span>
-        </button>
       </div>
 
       <div className="v6a-discover-ui v6a-dock-label" inert={phase !== 'DISCOVER'}>
@@ -493,14 +534,10 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       <div className="v6a-reading-ui v6a-reading-right" inert={phase !== 'POSTCARD' || busy}>
         <button className="v6-btn-text v6a-flip-hint" onClick={flip}>{front ? '翻回背面' : '翻到正面'} ↻</button>
         <button className="v6-btn-primary" onClick={collect}>{current && collected.has(current.id) ? '收回收藏套' : '完成数字收藏'} <span aria-hidden="true">↘</span></button>
+        <button className="v6-btn-text" onClick={() => onNavigate('post-office', {
+          postcardId: current ? `po-school-${current.schoolId}` : undefined,
+        })}>用这张卡写信</button>
       </div>
-
-      <div className="v6a-collection v6a-sleeve-back" aria-hidden="true" />
-      <div className="v6a-collection v6a-sleeve-front" aria-hidden="true">
-        <MacauTileBorder className="v6a-sleeve-tile" bg="#486055" stroke="#e9dfc3" accent="#caa565" />
-      </div>
-      <div className="v6a-collection v6a-stamp-mark" aria-hidden="true"><MacauTileDiamond primary="#964b34" secondary="#964b34" paper="transparent" />拾花一叶</div>
-      <div className="v6a-collection v6a-stamp-tool" aria-hidden="true"><i /><i /></div>
 
       <section className="v6a-collection v6a-complete-copy" inert={phase !== 'COMPLETE'} aria-label="数字收藏完成">
         <h1 tabIndex={-1}>已数字收藏</h1>
