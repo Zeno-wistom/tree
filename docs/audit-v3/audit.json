@@ -1,0 +1,151 @@
+{
+  "marks": [
+    {
+      "t": 80,
+      "html": 8,
+      "rootChildren": 0,
+      "rootHTML": "",
+      "stage": false,
+      "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "t": 200,
+      "html": 21,
+      "rootChildren": 1,
+      "rootHTML": "<div>校园来信正在准备…</div>",
+      "stage": false,
+      "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "t": 400,
+      "html": 21,
+      "rootChildren": 1,
+      "rootHTML": "<div>校园来信正在准备…</div>",
+      "stage": false,
+      "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "t": 700,
+      "html": 1080,
+      "rootChildren": 1,
+      "rootHTML": "<div class=\"v3 v3-idle\" data-state=\"IDLE\" data-busy=\"false\"><header class=\"v3-header\"><button class=\"v3-brand\" aria-label=\"校园来信，返回待机\"><svg viewBox=\"0 0 120 120\"",
+      "stage": true,
+      "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "t": 1100,
+      "html": 1080,
+      "rootChildren": 1,
+      "rootHTML": "<div class=\"v3 v3-idle\" data-state=\"IDLE\" data-busy=\"false\"><header class=\"v3-header\"><button class=\"v3-brand\" aria-label=\"校园来信，返回待机\"><svg viewBox=\"0 0 120 120\"",
+      "stage": true,
+      "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "t": 1600,
+      "html": 1080,
+      "rootChildren": 1,
+      "rootHTML": "<div class=\"v3 v3-idle\" data-state=\"IDLE\" data-busy=\"false\"><header class=\"v3-header\"><button class=\"v3-brand\" aria-label=\"校园来信，返回待机\"><svg viewBox=\"0 0 120 120\"",
+      "stage": true,
+      "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "t": 2400,
+      "html": 1080,
+      "rootChildren": 1,
+      "rootHTML": "<div class=\"v3 v3-idle\" data-state=\"IDLE\" data-busy=\"false\"><header class=\"v3-header\"><button class=\"v3-brand\" aria-label=\"校园来信，返回待机\"><svg viewBox=\"0 0 120 120\"",
+      "stage": true,
+      "bg": "rgba(0, 0, 0, 0)"
+    }
+  ],
+  "perf": {
+    "paints": [
+      {
+        "name": "first-paint",
+        "start": 212
+      },
+      {
+        "name": "first-contentful-paint",
+        "start": 236
+      }
+    ],
+    "domContentLoaded": 207,
+    "load": 209,
+    "fonts": "loaded",
+    "v3Present": true,
+    "stageRect": {
+      "w": 1673,
+      "h": 932,
+      "x": 124,
+      "y": 100
+    }
+  },
+  "sealBox": {
+    "wind": {
+      "w": 327,
+      "h": 121,
+      "opacity": "0",
+      "transform": "matrix(0.978148, -0.20791, 0.20791, 0.978148, 950, 0)",
+      "visibility": "hidden",
+      "z": "auto"
+    },
+    "wind2": {
+      "w": 269,
+      "h": 108,
+      "opacity": "0",
+      "transform": "matrix(0.978148, -0.20791, 0.20791, 0.978148, 950, 0)",
+      "visibility": "hidden",
+      "z": "auto"
+    },
+    "leaf": {
+      "w": 99,
+      "h": 105,
+      "opacity": "0.85",
+      "transform": "matrix(-0.819152, 0.573576, -0.573576, -0.819152, 800, -90)",
+      "visibility": "visible",
+      "z": "auto"
+    },
+    "tail": {
+      "w": 85,
+      "h": 207,
+      "opacity": "1",
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "visibility": "visible",
+      "z": "auto"
+    },
+    "seal": {
+      "w": 150,
+      "h": 141,
+      "opacity": "1",
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "visibility": "visible",
+      "z": "auto"
+    },
+    "env": {
+      "w": 1227,
+      "h": 707,
+      "opacity": "1",
+      "transform": "matrix(0.99863, -0.052336, 0.052336, 0.99863, 0, 0)",
+      "visibility": "visible",
+      "z": "auto"
+    }
+  },
+  "logs": [],
+  "idleShots": [
+    "docs/audit-v3/idle-00s.png",
+    "docs/audit-v3/idle-01s.png",
+    "docs/audit-v3/idle-02s.png",
+    "docs/audit-v3/idle-03s.png",
+    "docs/audit-v3/idle-04s.png",
+    "docs/audit-v3/idle-05s.png",
+    "docs/audit-v3/idle-06s.png",
+    "docs/audit-v3/idle-07s.png",
+    "docs/audit-v3/idle-08s.png",
+    "docs/audit-v3/idle-09s.png",
+    "docs/audit-v3/idle-10s.png",
+    "docs/audit-v3/idle-11s.png",
+    "docs/audit-v3/idle-12s.png",
+    "docs/audit-v3/idle-13s.png",
+    "docs/audit-v3/idle-14s.png",
+    "docs/audit-v3/idle-15s.png"
+  ]
+}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/v5/botanical-a.svg" type="image/svg+xml" />
+  <title>校园来信 V5 · 实际体验与验收</title>
+  <style>
+    @font-face{font-family:Campus;src:url('/v5/fonts/text.woff2') format('woff2');font-display:swap}
+    *{box-sizing:border-box}body{margin:0;background:#f5f1e7;color:#485b40;font-family:'Microsoft YaHei UI',sans-serif;line-height:1.7}main{max-width:1360px;margin:auto;padding:56px 32px 80px}h1,h2,h3{font-family:Campus,serif;font-weight:500;line-height:1.35}h1{font-size:44px;margin:8px 0 20px}h2{font-size:30px;margin:0 0 14px}h3{font-size:22px;margin:0 0 12px}p{max-width:860px;margin:0 0 20px}a{color:inherit;text-underline-offset:4px}header{padding:0 0 40px;border-bottom:2px solid #d8d8c1}nav{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}nav a,.switch button{display:inline-block;padding:9px 18px;background:#faf5e8;border:1.5px solid #b5b99d;border-radius:9px 9px 9px 2px;text-decoration:none;font:inherit;cursor:pointer}.primary{background:#7c9067!important;color:#fff!important}.eyebrow{color:#747c65;font-size:18px;letter-spacing:.1em}section{margin:48px 0}video{display:block;width:100%;max-height:730px;background:#e3e5d1;border:1.5px solid #b5b99d;border-radius:10px}figure{margin:0}figcaption{padding:12px 0 22px;font-size:17px;color:#66705a}img{display:block;width:100%;height:auto;border:1px solid #cecdb6;border-radius:5px}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #bf777e;outline-offset:4px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}.full{grid-column:1/-1}.switch{display:flex;gap:12px;margin:18px 0}.switch button[aria-pressed=true]{background:#dce2cb;box-shadow:2px 3px 0 #b5b99d}.result{display:flex;gap:28px;flex-wrap:wrap;padding:22px 26px;background:#e3e7d3;border-left:5px solid #7c9067;margin:24px 0}.result strong{display:block;font-size:24px}.result span{font-size:16px}details{padding:18px 0;border-bottom:1px solid #d8d8c1}summary{font-size:21px;cursor:pointer}details img{margin-top:18px}small{font-size:16px;color:#747c65}footer{margin-top:56px;padding-top:20px;border-top:2px solid #d8d8c1}ul{padding-left:24px}@media(max-width:800px){main{padding:30px 18px}h1{font-size:32px}.grid{grid-template-columns:1fr}.result{gap:18px}h2{font-size:26px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">拾花一叶 · 校园来信 V5</div>
+    <h1>从一封来信，到一片被珍藏的祝福。</h1>
+    <p>本页汇集实际 Edge 网页截图、未经剪辑的操作录屏和关键动画帧。画面来自可运行页面，触摸操作使用浏览器模拟。</p>
+    <nav><a class="primary" href="/">进入 V5 体验 →</a><a href="/?v4">打开 V4 对照</a><a href="DELIVERY.md">实现与验收记录</a><a href="#recording">连续录屏</a><a href="#pages">五页截图</a><a href="#frames">动画中间帧</a><a href="#comparison">V4 / V5 对比</a></nav>
+    <div class="result"><div><strong>16 / 16</strong><span>V5 两分辨率测试通过</span></div><div><strong>12 轮</strong><span>完整会话复位检查</span></div><div><strong>45.84 秒</strong><span>完整原始操作录屏</span></div><div><strong>构建通过</strong><span>TypeScript + Vite</span></div></div>
+  </header>
+
+  <section id="recording">
+    <h2>一段完整的真实运行过程</h2>
+    <p>含首次风效、揭封、沉底、抽出活动信封、聚焦与筛选、详情往返、明信片翻面、收藏入套、复位。原始录屏保留全部等待和转场，25 fps。</p>
+    <figure><video id="full-video" controls playsinline preload="metadata" poster="shots/1920-01-idle.png"><source src="v5-full-experience.webm" type="video/webm" /></video><figcaption><a href="v5-full-experience.webm" download>下载完整 WebM</a> · <a href="video/full-recording-timeline.json">操作时间标记</a> · <a href="video/full-contact.jpg">原视频抽帧联系表</a></figcaption></figure>
+    <div class="grid"><figure><h3>首次进入与三次风效</h3><video controls playsinline preload="metadata" poster="shots/1920-01-idle.png"><source src="v5-first-entry-wind.webm" type="video/webm" /></video><figcaption>15.60 秒。随后仍会间歇重复阵风。</figcaption></figure><figure><h3>开封、沉底、逐张抽信</h3><video controls playsinline preload="metadata" poster="shots/1920-02-discover.png"><source src="v5-open-continuous.webm" type="video/webm" /></video><figcaption>6.84 秒。观察同一个信封和前口袋的持续遮挡。</figcaption></figure></div>
+  </section>
+
+  <section id="pages">
+    <h2>五页与关键操作状态</h2>
+    <p>点击图片查看原始 PNG。切换尺寸只替换实际采集的截图。</p>
+    <div class="switch" role="group" aria-label="截图分辨率"><button type="button" aria-pressed="true" data-width="1920">1920 × 1080</button><button type="button" aria-pressed="false" data-width="1366">1366 × 768</button></div>
+    <div class="grid" id="page-shots">
+      <figure><a href="shots/1920-01-idle.png"><img src="shots/1920-01-idle.png" data-shot="01-idle" alt="首页大信封与花叶封签" loading="lazy" /></a><figcaption>P0 · 首页大信封</figcaption></figure>
+      <figure><a href="shots/1920-02-discover.png"><img src="shots/1920-02-discover.png" data-shot="02-discover" alt="半截信封承托三张活动来信" loading="lazy" /></a><figcaption>P1 · 活动信封扇形阵列</figcaption></figure>
+      <figure><a href="shots/1920-04-detail.png"><img src="shots/1920-04-detail.png" data-shot="04-detail" alt="展开的活动信纸与日期地点" loading="lazy" /></a><figcaption>P2 · 活动详情</figcaption></figure>
+      <figure><a href="shots/1920-05-postcard.png"><img src="shots/1920-05-postcard.png" data-shot="05-postcard" alt="桃花叶片异形明信片正面" loading="lazy" /></a><figcaption>P3 · 明信片预览</figcaption></figure>
+      <figure><a href="shots/1920-07-complete.png"><img src="shots/1920-07-complete.png" data-shot="07-complete" alt="明信片入套盖章与完成按钮" loading="lazy" /></a><figcaption>P4 · 收藏完成</figcaption></figure>
+      <figure><a href="shots/1920-06-back.png"><img src="shots/1920-06-back.png" data-shot="06-back" alt="奶油纸面的明信片背面与祝福文字" loading="lazy" /></a><figcaption>明信片背面</figcaption></figure>
+      <figure><a href="shots/1920-03-focus.png"><img src="shots/1920-03-focus.png" data-shot="03-focus" alt="聚焦活动信封与相邻信封退让" loading="lazy" /></a><figcaption>活动聚焦</figcaption></figure>
+      <figure><a href="shots/1920-08-reset.png"><img src="shots/1920-08-reset.png" data-shot="08-reset" alt="收藏后连续复位的大信封" loading="lazy" /></a><figcaption>复位后的首页</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="frames">
+    <h2>从动作中间看空间是否成立</h2>
+    <p>0%、25%、50%、75%、100% 以及结束后稳定状态。截图通过浏览器时钟推进真实动画获得，不是另画的示意图。</p>
+    <a href="frames/open-contact.jpg"><img src="frames/open-contact.jpg" alt="开封沉底连续动作的六个关键帧" loading="lazy" /></a>
+    <p><a href="frames/open-000.png">0%</a> · <a href="frames/open-025.png">25%</a> · <a href="frames/open-050.png">50%</a> · <a href="frames/open-075.png">75%</a> · <a href="frames/open-100.png">100%</a> · <a href="frames/open-stable.png">稳定状态</a> · <a href="frames/geometry.json">同一信封的几何记录</a></p>
+    <details><summary>选中活动与信纸展开</summary><a href="frames/detail-contact.jpg"><img src="frames/detail-contact.jpg" alt="活动详情展开五帧" loading="lazy" /></a></details>
+    <details><summary>明信片从信纸后方抽出</summary><a href="frames/postcard-contact.jpg"><img src="frames/postcard-contact.jpg" alt="抽出明信片五帧" loading="lazy" /></a></details>
+    <details><summary>正反面翻转与标题安全空间</summary><a href="frames/flip-contact.jpg"><img src="frames/flip-contact.jpg" alt="明信片翻面五帧" loading="lazy" /></a></details>
+    <details><summary>确认、入套、盖章</summary><a href="frames/collect-contact.jpg"><img src="frames/collect-contact.jpg" alt="明信片进入收藏套五帧" loading="lazy" /></a></details>
+  </section>
+
+  <section id="comparison">
+    <h2>V4 与 V5，实际页面并排看</h2>
+    <p>同一台浏览器、1920×1080、同一活动。左侧 V4，右侧 V5。</p>
+    <div class="grid"><figure class="full"><a href="comparison/idle-v4-v5.jpg"><img src="comparison/idle-v4-v5.jpg" alt="首页 V4 与 V5 对比" loading="lazy" /></a><figcaption>首页</figcaption></figure><figure class="full"><a href="comparison/discover-v4-v5.jpg"><img src="comparison/discover-v4-v5.jpg" alt="活动选择 V4 与 V5 对比" loading="lazy" /></a><figcaption>活动选择</figcaption></figure><figure class="full"><a href="comparison/detail-v4-v5.jpg"><img src="comparison/detail-v4-v5.jpg" alt="详情 V4 与 V5 对比" loading="lazy" /></a><figcaption>活动详情</figcaption></figure><figure class="full"><a href="comparison/postcard-v4-v5.jpg"><img src="comparison/postcard-v4-v5.jpg" alt="明信片 V4 与 V5 对比" loading="lazy" /></a><figcaption>明信片预览</figcaption></figure><figure class="full"><a href="comparison/complete-v4-v5.jpg"><img src="comparison/complete-v4-v5.jpg" alt="完成页 V4 与 V5 对比" loading="lazy" /></a><figcaption>收藏完成</figcaption></figure></div>
+  </section>
+
+  <section>
+    <h2>一套花叶纸品的来源</h2>
+    <div class="grid"><figure><a href="assets/source-sheet.png"><img src="assets/source-sheet.png" alt="用户 Illustrator 源文件的整体方案" loading="lazy" /></a><figcaption>用户提供的 Illustrator 方案，源文件只读提取。</figcaption></figure><div><img src="/v5/botanical-a.svg" alt="从 AI 提取的桃花和锯齿桃叶矢量" style="max-height:360px;border:0;object-fit:contain" loading="lazy" /><p>桃花、锯齿叶片、奶油厚边与卡其细描边被转译到封签、信封、来信、信纸和收藏套。正反面素材与动画容器独立，方便替换正式视觉稿。</p><a href="/v5/botanical-a.svg">查看原始 SVG</a></div></div>
+  </section>
+
+  <section>
+    <h2>测试与仍需现场验证的部分</h2>
+    <ul><li><a href="test-results.json">V5 测试原始报告</a>：16/16 通过。</li><li><a href="legacy-test-results.json">历史版本首轮报告</a>：49/50；1 项超时后<a href="legacy-recheck.json">单独重跑通过</a>。</li><li><a href="build.log">生产构建</a>、<a href="production-smoke.json">生产包首帧与完整流程</a>、<a href="runtime-cycles.json">12 轮会话</a>、<a href="performance.json">本机帧间隔采样</a>、<a href="video/decode-results.json">视频完整解码</a>、<a href="evidence-smoke.json">画廊与视频播放</a>。</li></ul>
+    <p>真实公共触屏、现场观看距离/亮度、Safari/Firefox 与竖屏手机尚未验收。活动内容和活动插画仍为演示，收藏仅在当前数字会话中反馈。自动化通过不代表最终审美验收。</p>
+    <p>具体修复根因、Skills 的实际使用、素材替换入口与全部限制均记录在 <a href="DELIVERY.md">V5 交付记录</a>。</p>
+  </section>
+  <footer><a href="/">进入校园来信 →</a> <small>2026-11-02 · 本地 V5 验收材料</small></footer>
+</main>
+<script>
+document.querySelectorAll('[data-width]').forEach(button => button.addEventListener('click', () => {
+  document.querySelectorAll('[data-width]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+  document.querySelectorAll('[data-shot]').forEach(image => { image.src = `shots/${button.dataset.width}-${image.dataset.shot}.png`; image.parentElement.href = image.src; });
+}));
+</script>
+</body>
+</html>

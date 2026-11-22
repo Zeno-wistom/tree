@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <defs>
+    <path id="leaf" d="M14 137C26 122 24 94 42 67c24-34 52-42 105-47-10 12-8 31-10 45-4 32-16 57-47 70-24 11-53 9-76 2Z"/>
+  </defs>
+  <use href="#leaf" transform="translate(0 2.5)" fill="#705c3d"/>
+  <use href="#leaf" fill="#f2e2b9" stroke="#b2a57c" stroke-width="1.5"/>
+  <path d="M27 132c8-13 7-35 24-63 18-26 44-36 82-41-6 13-4 31-9 52-10 36-41 62-97 52Z" fill="none" stroke="#a9936d" stroke-width=".7"/>
+  <g transform="rotate(-43 83 88)" text-anchor="middle" font-family="Noto Serif SC, SimSun, serif">
+    <text x="83" y="83" font-size="13" font-weight="700" fill="#315749">德智广场</text>
+    <path d="M47 89h72m-67 18h62" stroke="#ac966e" stroke-width=".6"/>
+    <text x="83" y="101" font-size="7.8" fill="#635333">拾花一叶 · 演示设计</text>
+  </g>
+  <path d="M15 137 7 142" stroke="#766146" stroke-width="2" stroke-linecap="round"/>
+</svg>

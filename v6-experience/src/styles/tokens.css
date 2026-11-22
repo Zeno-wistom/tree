@@ -1,0 +1,406 @@
+@font-face {
+  font-family: 'Shihua Serif';
+  src: url('/fonts/noto-serif-sc-v6.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  /* Core paper & ink palette derived from the 3-school A6 & seasonal postcards */
+  --v6-canvas: #EFECE0;
+  --v6-paper: #FAF5E8;
+  --v6-paper-deep: #F2EBD9;
+  --v6-sage: #E2E6D4;
+  --v6-sage-line: #B5BA9E;
+  --v6-ink: #1F4B4A;
+  --v6-ink-soft: #3B5B57;
+  --v6-muted: #5E6B5E;
+
+  /* Three universities theme accents */
+  --v6-um-red: #D94A2B;
+  --v6-um-wheat: #EFE5A8;
+  --v6-mpu-orange: #E88224;
+  --v6-mpu-blue: #204386;
+  --v6-utm-pink: #D87D90;
+  --v6-utm-plum: #5A394D;
+
+  /* Independent hardware & status lighting (decoupled from seasonal tree lights) */
+  --v6-light-branch: #E6B43E;
+  --v6-light-tray: #2C8C6C;
+  --v6-light-alert: #C64538;
+
+  /* Typography */
+  --v6-serif: 'Shihua Serif', 'Noto Serif CJK SC', 'Songti SC', 'STSong', 'SimSun', serif;
+  --v6-sans: 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei UI', 'Hiragino Sans GB', sans-serif;
+
+  /* Motion */
+  --v6-ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--v6-canvas);
+  color: var(--v6-ink);
+  font-family: var(--v6-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.v6-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--v6-canvas);
+  isolation: isolate;
+  touch-action: manipulation;
+}
+
+.v6-root *, .v6-dialog * {
+  box-sizing: border-box;
+}
+
+.v6-root :where(h1, h2, h3, p, dl, dt, dd, ul, ol) {
+  margin: 0;
+}
+
+:where(.v6-root) :where(button, input, textarea, select) {
+  font: inherit;
+  color: inherit;
+}
+
+.v6-root button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.v6-root button:disabled {
+  cursor: default;
+}
+
+.v6-root img {
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.v6-root :focus-visible {
+  outline: 3px solid var(--v6-um-red);
+  outline-offset: 4px;
+}
+
+.v6-root [tabindex='-1']:focus {
+  outline: none;
+}
+
+/* The world fills the screen. Only individual paper and apparatus have local coordinates. */
+.v6-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  --gutter: clamp(24px, 4.2vw, 86px);
+}
+/* Tactile fine cotton-paper grain overlay */
+.v6-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 95;
+  pointer-events: none;
+  background-image: url('/assets/v5/grain.svg');
+  background-size: 190px;
+  opacity: 0.14;
+}
+
+/* The shared envelope drives its own transition. Other scenes use a single short arrival. */
+.v6-route-scene { position: absolute; inset: 0; animation: v6-route-arrive 240ms ease-out both; }
+@keyframes v6-route-arrive { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .v6-route-scene { animation: none; } }
+
+/* Global persistent kiosk header */
+.v6-header {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: clamp(14px, 2.7vh, 32px);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 70;
+}
+
+.v6-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  padding: 2px 6px 2px 0;
+  min-height: 48px;
+}
+
+.v6-brand svg {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.v6-brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+}
+
+.v6-brand-text strong {
+  font-family: var(--v6-serif);
+  font-size: 22px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--v6-ink);
+}
+
+.v6-header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.v6-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 13px;
+  border: 1px solid #80917a55;
+  border-radius: 4px;
+  background: #f9f4e7d9;
+  font-size: 15px;
+}
+.v6-icon-btn:hover { background: #fffbef; }
+.v6-icon-btn svg { width: 22px; height: 22px; }
+
+.v6-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: auto;
+}
+
+/* Shared paper-editorial button primitives (48px+ touch target) */
+.v6-root .v6-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 0 24px;
+  border: 1.5px solid #163938;
+  background: var(--v6-ink);
+  color: var(--v6-paper);
+  border-radius: 12px 12px 3px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  box-shadow: 3px 4px 0 #BFC7B1;
+  transition: transform 160ms var(--v6-ease), box-shadow 160ms var(--v6-ease), background-color 160ms;
+}
+
+.v6-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #173B3A;
+  box-shadow: 4px 6px 0 #BFC7B1;
+}
+
+.v6-btn-primary:disabled {
+  opacity: 0.48;
+  box-shadow: none;
+}
+
+.v6-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1.5px solid var(--v6-sage-line);
+  background: var(--v6-paper);
+  color: var(--v6-ink);
+  border-radius: 11px 11px 3px 11px;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 2px 3px 0 #D4D7C0;
+  transition: transform 160ms var(--v6-ease), background-color 160ms;
+}
+
+.v6-btn-secondary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #FFFDF7;
+}
+
+.v6-root .v6-btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 22px;
+  border: 1.5px solid #B53B20;
+  background: var(--v6-um-red);
+  color: #FFFBF4;
+  border-radius: 12px 12px 3px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 3px 4px 0 #DFBEB3;
+  transition: transform 160ms var(--v6-ease), background-color 160ms;
+}
+
+.v6-btn-accent:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #C44023;
+}
+
+.v6-btn-text {
+  border: 0;
+  background: transparent;
+  color: var(--v6-ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  font-size: 15px;
+  padding: 10px 12px;
+  min-height: 44px;
+}
+
+.v6-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  background: #F4EAD3;
+  border: 1px solid #D3BE92;
+  color: #6B5023;
+  border-radius: 6px 2px 6px 2px;
+}
+
+/* Timeout dialog */
+.v6-dialog {
+  padding: 0;
+  border: 1.8px solid var(--v6-sage-line);
+  border-radius: 20px 6px 20px 6px;
+  background: var(--v6-paper);
+  color: var(--v6-ink);
+  box-shadow: 0 8px 0 #C8CDB4;
+}
+
+.v6-dialog::backdrop {
+  background: rgba(31, 75, 74, 0.36);
+  backdrop-filter: blur(4px);
+}
+
+.v6-dialog-body {
+  width: 460px;
+  padding: 34px 38px;
+  text-align: center;
+  position: relative;
+}
+
+.v6-dialog-count {
+  display: block;
+  font-family: var(--v6-serif);
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--v6-um-red);
+  line-height: 1.1;
+}
+
+.v6-dialog-body h2 {
+  font-family: var(--v6-serif);
+  font-size: 26px;
+  margin: 10px 0 12px;
+}
+
+.v6-dialog-body p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--v6-muted);
+  margin-bottom: 24px;
+}
+
+.v6-dialog-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v6-root button {
+    transition-duration: 0.01ms !important;
+  }
+}
+/* One paper garden persists behind every route. */
+.v6-garden {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 58% 29%, #fff8e9 0, transparent 54%),
+    radial-gradient(ellipse at 1% 63%, #bacbb2 0, transparent 66%),
+    linear-gradient(140deg, #dde2cd, #f2ecdc 58%, #e4d3b7);
+}
+.v6-garden::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(117deg, transparent 28%, #fff9e876 43%, transparent 64%);
+}
+.v6-garden::after {
+  content: '';
+  position: absolute;
+  inset: auto var(--gutter) 0;
+  height: 17vh;
+  background: url('/assets/v62/macau-tile.svg') repeat left bottom / clamp(54px, 5vw, 86px);
+  mask-image: radial-gradient(ellipse at 82% 110%, #000, transparent 71%);
+  opacity: .32;
+}
+.v6-garden-shadow {
+  position: absolute;
+  left: -8%;
+  top: -27vh;
+  width: 113%;
+  height: 80vh;
+  transform: rotate(12deg) scaleY(1.45);
+  transform-origin: top center;
+  filter: blur(13px);
+  opacity: .15;
+}
+.v6-garden-floor {
+  position: absolute;
+  inset: auto 0 0;
+  height: 34vh;
+  background: linear-gradient(0deg, #6e7e5433, transparent);
+}
+.v6-root[data-route='home'] .v6-brand {
+  background: linear-gradient(90deg, #f1ead9ef, #f1ead9c9 74%, transparent);
+  padding-right: 23px;
+}
+.v6-root[data-route='explore'] .v6-garden-shadow {
+  opacity: .13;
+  filter: blur(8px);
+}
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 340ms;
+  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+}
+.v6-root[data-scene-transition] .v6-route-scene { animation: none; }

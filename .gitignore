@@ -1,0 +1,8 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+.env*
+*.tsbuildinfo
+test-results-v5/
+/.tools/v5-python/

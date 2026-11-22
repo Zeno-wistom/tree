@@ -1,0 +1,2 @@
+import { defineConfig } from '@playwright/test';
+export default defineConfig({ testDir: './tests', fullyParallel: false, reporter: [['list'], ['json', { outputFile: 'docs/test-results.json' }]], use: { baseURL: 'http://127.0.0.1:5173', channel: 'msedge', headless: true, trace: 'retain-on-failure' }, projects: [{ name: '1920', use: { viewport: { width: 1920, height: 1080 } } }, { name: '1366', use: { viewport: { width: 1366, height: 768 } } }], webServer: { command: 'npm run dev -- --port 5173', url: 'http://127.0.0.1:5173', reuseExistingServer: true } });

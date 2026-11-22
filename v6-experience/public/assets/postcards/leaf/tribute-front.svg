@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <defs>
+    <path id="leaf" d="M14 137C26 122 24 94 42 67c24-34 52-42 105-47-10 12-8 31-10 45-4 32-16 57-47 70-24 11-53 9-76 2Z"/>
+    <clipPath id="cut"><use href="#leaf"/></clipPath>
+    <pattern id="hatching" width="4" height="4" patternUnits="userSpaceOnUse">
+      <path d="m0 4 4-4" stroke="#f4e4af" stroke-opacity=".25" stroke-width=".7"/>
+    </pattern>
+  </defs>
+  <use href="#leaf" transform="translate(0 2.5)" fill="#423e27"/>
+  <use href="#leaf" fill="#315749" stroke="#e7c999" stroke-width="2"/>
+  <g clip-path="url(#cut)">
+    <path d="M15 137C70 139 121 91 147 19L163 9v155H17Z" fill="#426d58"/>
+    <path d="M14 138C57 119 102 70 148 18m-91 93Q49 78 69 48m16 37q-3-34 14-52M39 124Q35 99 46 77m13 35q29 5 49-7m-28-16q30-1 45-18" fill="none" stroke="#ddce97" stroke-width="1" opacity=".65"/>
+    <path d="M22 130C50 96 45 77 87 49c-32 35-29 60-65 81Zm57 7q44-26 55-70C127 113 112 130 79 137Z" fill="url(#hatching)"/>
+    <g transform="translate(76 101)">
+      <path d="M0-15 15 0 0 15-15 0Z" fill="#f9e7bb" stroke="#d0a972" stroke-width="1.4"/>
+      <path d="M0 0C-8-11 8-11 0 0 11-8 11 8 0 0 8 11-8 11 0 0-11 8-11-8 0 0Z" fill="#3e654e"/>
+      <circle r="2.3" fill="#c3825c"/>
+    </g>
+    <path d="m48 96 5-1m-7 7 6-1m-9 8 7-2m55-49 2-6m2 12 5-2m-1 8 5-3" fill="none" stroke="#e3ce97" opacity=".62"/>
+    <text x="87" y="71" transform="rotate(-43 87 71)" fill="#fff2cb" font-family="Noto Serif SC, SimSun, serif" font-size="13" font-weight="700" letter-spacing="1" text-anchor="middle">拾花一叶</text>
+  </g>
+  <path d="M15 137 7 142" stroke="#635b37" stroke-width="2" stroke-linecap="round"/>
+</svg>

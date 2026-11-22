@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 774 1091">
+  <defs>
+    <pattern id="tile" width="94" height="94" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="94" height="94" fill="#244c47"/>
+      <path d="M47 9C32 29 15 31 9 47c20-6 31-7 38 19 7-26 18-25 38-19-6-16-23-18-38-38Z" fill="none" stroke="#d9c68e" stroke-width="3"/>
+      <circle cx="47" cy="47" r="9" fill="#d9c68e"/>
+    </pattern>
+    <pattern id="grain" width="53" height="59" patternUnits="userSpaceOnUse">
+      <path d="m4 12 3 1m24 29 4-1m11-33 2 2M12 53l4-2" stroke="#f4e7c9" opacity=".12"/>
+    </pattern>
+  </defs>
+  <rect width="774" height="1091" fill="#eee4bb"/>
+  <path d="M0 0h774v774H0z" fill="#244c47"/>
+  <path d="M0 0h774v774H0z" fill="url(#grain)"/>
+  <path d="M-90 734C151 593 165 366 394 259c143-67 260-104 444-288" fill="none" stroke="#192f30" stroke-width="34"/>
+  <g fill="#7e9370" stroke="#c0c79b" stroke-width="3">
+    <path d="M142 575C29 543 5 432 35 365c107 37 138 119 107 210Z"/>
+    <path d="M190 497c-10-127 68-193 153-208 4 101-49 181-153 208Z"/>
+    <path d="M377 281c-73-96-36-184 28-229 64 83 59 166-28 229Z"/>
+    <path d="M512 200c23-121 111-157 190-139-31 103-95 150-190 139Z"/>
+  </g>
+  <g fill="none" stroke="#d7d6a7" stroke-width="3" opacity=".65">
+    <path d="m48 392 94 183M320 309 190 497M399 78l-22 203M672 82 512 200"/>
+  </g>
+  <g transform="translate(318 463)" fill="#de7f58" stroke="#f2c59b" stroke-width="3">
+    <path d="M0 0C-82-29-152-114-111-155c26-26 64 12 83 41-2-68 7-131 52-129 50 2 42 74 31 126 45-44 99-80 130-43 37 44-32 105-85 135 64-2 124 14 121 62-4 52-89 58-147 41-3 66-22 123-70 114-47-9-47-78-37-132-54 35-121 55-144 10-22-43 44-74 97-90Z"/>
+    <circle r="26" fill="#f3dfa9" stroke="none"/>
+  </g>
+  <g transform="translate(609 311) rotate(24) scale(.59)" fill="#e5aa72" stroke="#f4d5a2" stroke-width="4">
+    <path d="M0 0C-82-29-152-114-111-155c26-26 64 12 83 41-2-68 7-131 52-129 50 2 42 74 31 126 45-44 99-80 130-43 37 44-32 105-85 135 64-2 124 14 121 62-4 52-89 58-147 41-3 66-22 123-70 114-47-9-47-78-37-132-54 35-121 55-144 10-22-43 44-74 97-90Z"/>
+    <circle r="26" fill="#f3dfa9" stroke="none"/>
+  </g>
+  <path d="M0 703h774v71H0z" fill="url(#tile)"/>
+  <g transform="translate(55 829)" fill="#244c47">
+    <text font-family="serif" font-size="51" font-weight="700" letter-spacing="8">德智广场</text>
+    <text y="105" font-family="serif" font-size="76" font-weight="700" letter-spacing="4">拾花一叶</text>
+    <text y="162" font-family="sans-serif" font-size="21" letter-spacing="4">广场纪念 · 项目原创演示卡</text>
+    <path d="M0 202h654" stroke="#a59665"/>
+    <text y="246" font-family="sans-serif" font-size="20" letter-spacing="2">把风、花叶与相遇，留在一张纸上。</text>
+  </g>
+</svg>

@@ -1,0 +1,154 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE-v6.2-experience\\v6-experience\\playwright.config.ts",
+    "rootDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/v6.2-rebuild/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "kiosk-1920",
+        "name": "kiosk-1920",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "kiosk-1366",
+        "name": "kiosk-1366",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "kiosk-1600",
+        "name": "kiosk-1600",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/v6.2-space.spec.ts"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "desktop-1440x900",
+        "name": "desktop-1440x900",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE-v6.2-experience/v6-experience/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/v6.2-space.spec.ts"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.49.1",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run preview -- --host 127.0.0.1 --port 4176 --strictPort",
+      "url": "http://127.0.0.1:4176",
+      "reuseExistingServer": true,
+      "timeout": 30000
+    }
+  },
+  "suites": [
+    {
+      "title": "v6.1-envelope.spec.ts",
+      "file": "v6.1-envelope.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "触控五轮：叶封、翻盖与下沉重叠，支持中途返回恢复",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "kiosk-1920",
+              "projectName": "kiosk-1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "passed",
+                  "duration": 28999,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-22T08:26:23.238Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "63718d3171e7c3b01195-61931d666275a214233e",
+          "file": "v6.1-envelope.spec.ts",
+          "line": 5,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-22T08:26:21.653Z",
+    "duration": 31213.452,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

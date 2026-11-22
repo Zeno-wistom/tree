@@ -1,0 +1,21 @@
+{
+  "base": "http://127.0.0.1:5176",
+  "browser": "156.0.4314.58",
+  "results": [
+    {
+      "check": "Production static envelope with main JavaScript unavailable",
+      "passed": true
+    },
+    {
+      "check": "Production early first-frame click, full journey and reset",
+      "viewport": "1920x1080",
+      "passed": true
+    },
+    {
+      "check": "Production early first-frame click, full journey and reset",
+      "viewport": "1366x768",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

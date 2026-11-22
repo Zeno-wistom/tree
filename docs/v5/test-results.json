@@ -1,0 +1,711 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "playwright.v5.config.ts"
+    ],
+    "configFile": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\playwright.v5.config.ts",
+    "rootDir": "C:/Users/rjx58/Documents/ChatGPT/TREE/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE/test-results-v5",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "1920",
+        "name": "1920",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/v5.spec.ts"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/Users/rjx58/Documents/ChatGPT/TREE/test-results-v5",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "1366",
+        "name": "1366",
+        "testDir": "C:/Users/rjx58/Documents/ChatGPT/TREE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/v5.spec.ts"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\test-results-v5",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "1920",
+        "testDir": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\tests",
+        "snapshotDir": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\tests",
+        "testIgnore": [],
+        "testMatch": "**/v5.spec.ts",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:5175",
+          "channel": "msedge",
+          "headless": true,
+          "trace": "retain-on-failure",
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "1920"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\test-results-v5",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "1366",
+        "testDir": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\tests",
+        "snapshotDir": "C:\\Users\\rjx58\\Documents\\ChatGPT\\TREE\\tests",
+        "testIgnore": [],
+        "testMatch": "**/v5.spec.ts",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:5175",
+          "channel": "msedge",
+          "headless": true,
+          "trace": "retain-on-failure",
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "1366"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/v5/test-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 10,
+    "webServer": {
+      "command": "npm run dev -- --port 5175",
+      "url": "http://127.0.0.1:5175",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "v5.spec.ts",
+      "file": "v5.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "V5 JavaScript 未就绪时已经呈现完整新首帧",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 605,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:08.730Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-80e24c394a1af62c26d5",
+          "file": "v5.spec.ts",
+          "line": 19,
+          "column": 1
+        },
+        {
+          "title": "V5 首帧、持续阵风、同一信封连续下沉",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15656,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:09.645Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-d80708947dcfbda4db80",
+          "file": "v5.spec.ts",
+          "line": 27,
+          "column": 1
+        },
+        {
+          "title": "V5 三校筛选、分页、详情逆向返回及内容匹配",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17897,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:25.311Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-e47d5805d7f8a0023bbc",
+          "file": "v5.spec.ts",
+          "line": 47,
+          "column": 1
+        },
+        {
+          "title": "V5 收藏、翻面中确认、返回首页、刷新清空",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12293,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:43.216Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-10a076f192b67b4ec7e0",
+          "file": "v5.spec.ts",
+          "line": 77,
+          "column": 1
+        },
+        {
+          "title": "V5 触摸首点聚焦、二点打开及 reduced-motion",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1947,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:55.517Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-703a0b95b782871c0ad7",
+          "file": "v5.spec.ts",
+          "line": 98,
+          "column": 1
+        },
+        {
+          "title": "V5 快速筛选、动画中重置、键盘完整主路径",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13439,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:57.473Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-ad3d542da5d4f6e54ba6",
+          "file": "v5.spec.ts",
+          "line": 117,
+          "column": 1
+        },
+        {
+          "title": "V5 会话超时、继续与自动重置",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19761,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:44:10.920Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-94476d2216032c92bf02",
+          "file": "v5.spec.ts",
+          "line": 142,
+          "column": 1
+        },
+        {
+          "title": "V5 缺失明信片与空学校仍可恢复",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1920",
+              "projectName": "1920",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1974,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:44:30.691Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-4cad2fbb7e0eb81ee9e3",
+          "file": "v5.spec.ts",
+          "line": 155,
+          "column": 1
+        },
+        {
+          "title": "V5 JavaScript 未就绪时已经呈现完整新首帧",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 514,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:08.730Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-64e60347c8c4bdcbd39b",
+          "file": "v5.spec.ts",
+          "line": 19,
+          "column": 1
+        },
+        {
+          "title": "V5 首帧、持续阵风、同一信封连续下沉",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 15721,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:09.533Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-dfd76a512cb121a71d69",
+          "file": "v5.spec.ts",
+          "line": 27,
+          "column": 1
+        },
+        {
+          "title": "V5 三校筛选、分页、详情逆向返回及内容匹配",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 18250,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:25.264Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-8cd66aa9f7bd7903eab1",
+          "file": "v5.spec.ts",
+          "line": 47,
+          "column": 1
+        },
+        {
+          "title": "V5 收藏、翻面中确认、返回首页、刷新清空",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 13001,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:43.524Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-7a3882dd95d08c6a2bd8",
+          "file": "v5.spec.ts",
+          "line": 77,
+          "column": 1
+        },
+        {
+          "title": "V5 触摸首点聚焦、二点打开及 reduced-motion",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1887,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:56.534Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-a1b0123b330e69b06122",
+          "file": "v5.spec.ts",
+          "line": 98,
+          "column": 1
+        },
+        {
+          "title": "V5 快速筛选、动画中重置、键盘完整主路径",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 13400,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:43:58.428Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-b38c45f56bc081038d1a",
+          "file": "v5.spec.ts",
+          "line": 117,
+          "column": 1
+        },
+        {
+          "title": "V5 会话超时、继续与自动重置",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 20128,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:44:11.836Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-b8f1b289f1c12af62359",
+          "file": "v5.spec.ts",
+          "line": 142,
+          "column": 1
+        },
+        {
+          "title": "V5 缺失明信片与空学校仍可恢复",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "1366",
+              "projectName": "1366",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2523,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T12:44:31.972Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d8c2a13ba74190a6a26c-620aadb9a117054d99f3",
+          "file": "v5.spec.ts",
+          "line": 155,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-02T12:43:08.149Z",
+    "duration": 86991.08899999999,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
