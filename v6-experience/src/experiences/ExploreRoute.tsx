@@ -3,23 +3,24 @@ import { flushSync } from 'react-dom';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import {
-  dateLabel, events, getSchool, schools, timeLabel,
+  dateLabel, eventStatus, events, getSchool, schools, timeLabel,
   type CampusEvent, type RouteId, type SchoolId,
 } from '../data/catalog';
 import { useObjectScale } from '../hooks/useObjectScale';
 import { useChime } from '../hooks/useChime';
 import { MacauTileBorder, MacauTileDiamond } from '../components/MacauOrnaments';
 import { HomeHub } from './HomeHub';
+import { gardenCard } from '../data/gardenCard';
 import './explore.css';
 
 gsap.registerPlugin(useGSAP);
 
 type Phase = 'IDLE' | 'OPENING' | 'DISCOVER' | 'POSTCARD' | 'COMPLETE' | 'RETURNING';
-type Filter = { school: 'all' | SchoolId; batch: number };
+type Filter = { school: 'all' | 'garden' | SchoolId; batch: number };
 
 const FIRST: Filter = { school: 'all', batch: 0 };
-const PAGE_SIZE = 3;
-const DISCOVER_POSE = { x: 125, y: 259, scale: .76, rotation: 0 };
+const PAGE_SIZE = 4;
+const DISCOVER_POSE = { x: 155, y: 304, scale: .68, rotation: 0 };
 const READING_POSE = { x: -137, y: 444, scale: .36, rotation: 0 };
 const CARD_HEIGHT = 254 * 1091 / 774;
 const HOME_POSE = { x: 267, y: 181, scale: 0.685, rotation: -7 };
@@ -40,10 +41,10 @@ interface ExploreRouteProps {
 function fanPose(index: number, count: number, lifted = false) {
   const offset = index - (count - 1) / 2;
   return {
-    x: offset * 334,
-    y: -238 + Math.abs(offset) * 18 - (lifted ? 18 : 0),
-    rotation: offset * 9 + (lifted ? offset * -3 : 0),
-    scale: lifted ? 1.26 : 1.22,
+    x: offset * 246,
+    y: -177 + Math.abs(offset) * 2 - (lifted ? 18 : 0),
+    rotation: offset * 4 + (lifted ? offset * -1.5 : 0),
+    scale: lifted ? 1.06 : 1,
   };
 }
 
@@ -58,20 +59,22 @@ function EventCard({ item, selected, front, clickable, collected, onHover, onRea
   onTilt: (event: PointerEvent<HTMLButtonElement>) => void;
   onRest: () => void;
 }) {
-  const school = getSchool(item.schoolId);
+  const school = item.kind === 'garden' ? gardenCard : getSchool(item.schoolId);
+  const status = eventStatus(item);
   const bodyId = `v6a-body-${item.id}`;
   return (
-    <div className="v6a-event" data-event={item.id} style={{ '--card-ink': school.ink } as CSSProperties}>
+    <div className="v6a-event" data-event={item.id} data-selected={selected || undefined} style={{ '--card-ink': school.ink } as CSSProperties}>
       <div className="v6a-card-tilt">
         <div className="v6a-card-turn">
           <div className="v6a-card-face v6a-card-writing" aria-hidden={!selected || front}>
             <img src={school.backImage} alt="" draggable={false} />
             <div className="v6a-card-stamp" aria-hidden="true"><MacauTileDiamond primary={school.ink} secondary={school.accent} /></div>
             <div className="v6a-card-print" id={bodyId}>
-              <small>非官方演示活动</small>
+              <small>{item.category}</small>
               <h2>{item.title}</h2>
-              <p className="v6a-card-date">{dateLabel(item)} · {timeLabel(item)}</p>
-              {item.description.split('\n').map((line) => <p key={line}>{line}</p>)}
+              <p className="v6a-card-date">{dateLabel(item)} {timeLabel(item) && `· ${timeLabel(item)}`}</p>
+              <p>{item.description}</p>
+              {status === 'ended' && <p className="v6a-card-ended">活动已结束 · 留作纪念</p>}
             </div>
             <p className="v6a-card-location">{item.location}</p>
           </div>
@@ -86,7 +89,7 @@ function EventCard({ item, selected, front, clickable, collected, onHover, onRea
       <button
         type="button"
         className="v6a-event-hit"
-        aria-label={selected ? (front ? '明信片正面，翻回背面' : '明信片背面，翻到正面') : `${item.title}，${school.name}，${dateLabel(item)}${collected ? '，已数字收藏' : ''}`}
+        aria-label={selected ? (front ? '明信片正面，翻回背面' : '明信片背面，翻到正面') : `${item.title}，${school.name}，${dateLabel(item)}${status === 'ended' ? '，活动已结束' : ''}${collected ? '，已数字收藏' : ''}`}
         aria-describedby={selected && !front ? bodyId : undefined}
         disabled={!clickable}
         onClick={onRead}
@@ -120,12 +123,18 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
   const [front, setFront] = useState(false);
   const { play } = useChime();
 
-  const availableFor = ({ school }: Filter) => events.filter(
-    (item) => item.status !== 'ended' && (school === 'all' || item.schoolId === school)
+  const displayEvents = events.filter((event, index) => event.kind === 'garden' || events.findIndex(
+    (candidate) => candidate.kind !== 'garden' && candidate.schoolId === event.schoolId,
+  ) === index);
+  const availableFor = ({ school }: Filter) => displayEvents.filter(
+    (item) => school === 'all' || (school === 'garden' ? item.kind === 'garden' : item.kind !== 'garden' && item.schoolId === school)
   );
   const available = availableFor(filter);
   const shown = available.slice(filter.batch * PAGE_SIZE, (filter.batch + 1) * PAGE_SIZE);
-  const currentSchool = current ? getSchool(current.schoolId) : null;
+  const currentSchool = current ? (current.kind === 'garden' ? gardenCard : getSchool(current.schoolId)) : null;
+  const currentEvents = current && current.kind !== 'garden'
+    ? events.filter((event) => event.schoolId === current.schoolId)
+    : current ? [current] : [];
 
   const find = (selector: string) => root.current?.querySelector<HTMLElement>(selector) ?? null;
   const findAll = (selector: string) => Array.from(root.current?.querySelectorAll<HTMLElement>(selector) ?? []);
@@ -142,12 +151,30 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     gsap.set(findAll('.v6a-card-tilt'), { rotateX: 0, rotateY: 0 });
   };
 
+  const objectScale = () => {
+    const paper = root.current?.querySelector<HTMLElement>('.v6a-paper-space');
+    return Number.parseFloat(
+      paper ? getComputedStyle(paper).getPropertyValue('--object-scale') : '1',
+    ) || 1;
+  };
+
+  const homePose = () => {
+    const paper = root.current?.querySelector<HTMLElement>('.v6a-paper-space');
+    const label = root.current?.querySelector<HTMLElement>('.v6-home-leaf .v6-home-object-label');
+    if (!paper || !label) return HOME_POSE;
+    const scale = objectScale();
+    const paperTop = paper.getBoundingClientRect().top;
+    const lift = 1040 * HOME_POSE.scale * Math.abs(Math.sin(HOME_POSE.rotation * Math.PI / 180));
+    const minY = (label.getBoundingClientRect().bottom + 18 - paperTop) / scale + lift;
+    return { ...HOME_POSE, y: Math.max(HOME_POSE.y, minY) };
+  };
+
   const restore = () => {
     pendingFilter.current = null;
     setFilter(FIRST);
     setCurrent(null);
     setFront(false);
-    gsap.set(envelope.current, { ...HOME_POSE, autoAlpha: 1 });
+    gsap.set(envelope.current, { ...homePose(), autoAlpha: 1 });
     gsap.set(find('.v6a-envelope-flap'), { rotateX: 0, zIndex: 9, autoAlpha: 1 });
     gsap.set(find('.v6a-seal'), { x: 0, y: 0, rotate: 0, autoAlpha: 1 });
     gsap.set(find('.v6a-seal-leaf'), { rotateX: 0 });
@@ -161,7 +188,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
   };
 
   useGSAP(() => {
-    gsap.set(envelope.current, HOME_POSE);
+    gsap.set(envelope.current, homePose());
     gsap.set(find('.v6-home'), { autoAlpha: atHome ? 1 : 0 });
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const onReduce = () => {
@@ -174,7 +201,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     };
     const wind = root.current?.querySelector<SVGElement>('.v6-home-wind');
     const sealPaper = find('.v6a-seal-paper');
-    const bough = root.current?.querySelector<SVGElement>('.v6-home-bough');
+    const bough = root.current?.querySelector<HTMLElement>('.v6-home-bough-motion');
     const gust = { force: 0 };
     const breeze = gsap.matchMedia();
     breeze.add('(prefers-reduced-motion: no-preference)', () => {
@@ -191,20 +218,29 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
         setGust(Math.max(0, 1 - distance / 230));
       };
       const onLeave = () => setGust(0);
+      let impulseStart = -100;
+      const onImpulse = (event: Event) => {
+        if (event.type === 'pointerdown' || (event as globalThis.PointerEvent).pointerType === 'mouse') impulseStart = performance.now() / 1000;
+      };
       const paint = (time: number) => {
         if (phaseRef.current !== 'IDLE' || document.hidden) return;
         const swell = Math.max(0, Math.sin(time * .91) * .64 + Math.sin(time * 1.63 - .9) * .36);
-        const force = Math.min(1.25, swell + gust.force * .79);
+        const impulseAge = time - impulseStart;
+        const impulse = impulseAge >= 0 && impulseAge < 3 ? Math.sin(impulseAge / 3 * Math.PI) * .8 : 0;
+        const periodicGust = Math.pow(Math.max(0, Math.sin(time * .19 - 1.2)), 8) * .8;
+        const force = Math.min(1.25, swell + gust.force * .79 + impulse + periodicGust);
         lift(2 + force * 21);
         bend(force * .64 + Math.sin(time * .57) * .42);
         trace(Math.max(0, force - .3) * .65);
         wind?.style.setProperty('--wind-travel', `${-68 - force * 72}px`);
       };
       root.current?.addEventListener('pointermove', onMove, { passive: true });
+      root.current?.addEventListener('pointerdown', onImpulse, { passive: true });
       root.current?.addEventListener('pointerleave', onLeave);
       gsap.ticker.add(paint);
       return () => {
         root.current?.removeEventListener('pointermove', onMove);
+        root.current?.removeEventListener('pointerdown', onImpulse);
         root.current?.removeEventListener('pointerleave', onLeave);
         gsap.ticker.remove(paint);
         gsap.set([sealPaper, wind, bough].filter(Boolean), { clearProps: 'transform,opacity' });
@@ -235,6 +271,16 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     timeline.current = next;
     if (reduce.current) next.timeScale(100);
     return next;
+  };
+
+  const fittedPoseY = (pose: { y: number; scale: number }, marginRatio = .045) => {
+    const paper = root.current?.querySelector<HTMLElement>('.v6a-paper-space');
+    const scale = Number.parseFloat(
+      paper ? getComputedStyle(paper).getPropertyValue('--object-scale') : '1',
+    ) || 1;
+    const margin = Math.max(28, window.innerHeight * marginRatio);
+    const maxY = (window.innerHeight / 2 - margin) / scale + 276 - 552 * pose.scale;
+    return Math.min(pose.y, maxY);
   };
 
   useLayoutEffect(() => {
@@ -270,9 +316,21 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       .set(seal, { x: -8, y: -24, rotate: -7 }, .63)
       .to(seal, { x: 0, y: 0, rotate: 0, autoAlpha: 1, duration: .23, ease: 'power2.out' }, .63)
       .to(find('.v6a-seal-leaf'), { rotateX: 0, duration: .23 }, .63)
-      .to(envelope.current, { ...HOME_POSE, duration: .73, ease: 'sine.inOut' }, .35)
+      .to(envelope.current, { ...homePose(), duration: .73, ease: 'sine.inOut' }, .35)
       .to(findAll('.v6-home, .v6a-open-hint'), { autoAlpha: 1, duration: .42 }, .65);
   }, [atHome]);
+
+  useLayoutEffect(() => {
+    const refit = () => {
+      if (phaseRef.current === 'IDLE') {
+        gsap.set(envelope.current, homePose());
+      } else if (phaseRef.current === 'DISCOVER') {
+        gsap.set(envelope.current, { ...DISCOVER_POSE, y: fittedPoseY(DISCOVER_POSE) });
+      }
+    };
+    window.addEventListener('resize', refit);
+    return () => window.removeEventListener('resize', refit);
+  }, []);
 
   const motionToFan = (tl: gsap.core.Timeline, nodes: HTMLElement[], position: gsap.Position) =>
     tl.to(nodes, {
@@ -304,7 +362,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       .to(find('.v6a-open-hint'), { autoAlpha: 0, duration: .16 }, 0)
       .to(find('.v6a-seal-leaf'), { rotateX: 58, duration: .24, ease: 'power2.out' }, 'peel')
       .to(seal, { x: 34, y: -20, rotation: 17, duration: .23, ease: 'power2.out' }, 'peel')
-      .to(envelope.current, { ...DISCOVER_POSE, duration: .92, ease: 'sine.inOut' }, 'sink')
+      .to(envelope.current, { ...DISCOVER_POSE, y: fittedPoseY(DISCOVER_POSE), duration: .92, ease: 'sine.inOut' }, 'sink')
       .to(find('.v6-home'), { autoAlpha: 0, duration: .56, ease: 'sine.inOut' }, 'sink')
       .to(seal, { x: 114, y: 27, rotation: 46, autoAlpha: 0, duration: .35, ease: 'power1.in' }, .23)
       .to(lid, { rotateX: 90, duration: .27, ease: 'sine.inOut' }, 'hinge')
@@ -334,9 +392,9 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
     setCurrent(item);
     setFront(false);
     const next = nextTimeline(() => { setScene('POSTCARD'); focus(`[data-event="${item.id}"] button`); });
+    const siblings = cards().filter((node) => node !== chosen);
     next
       .to(findAll('.v6a-discover-ui'), { autoAlpha: 0, duration: 0.2 }, 0)
-      .to(cards().filter((node) => node !== chosen), { y: 170, autoAlpha: 0, duration: 0.43, stagger: 0.04, ease: 'power2.in' }, 0)
       .set(chosen, { zIndex: 7 }, 0)
       .to(envelope.current, { ...READING_POSE, duration: 0.68, ease: 'power2.inOut' }, 0)
       .to(chosen, {
@@ -345,6 +403,9 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
         rotation: -1.4, scale: 1.61 / READING_POSE.scale, duration: .68, ease: 'power2.inOut',
       }, 0)
       .to(findAll('.v6a-reading-ui'), { autoAlpha: 1, duration: 0.31 }, 0.54);
+    if (siblings.length) {
+      next.to(siblings, { y: 170, autoAlpha: 0, duration: 0.43, stagger: 0.04, ease: 'power2.in' }, 0);
+    }
   };
 
   const tiltCard = (event: PointerEvent<HTMLButtonElement>) => {
@@ -390,11 +451,11 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       setScene('DISCOVER');
       focus(`[data-event="${current.id}"] button`);
     });
-    gsap.set(siblings, { x: 0, y: 170, scale: 1, rotation: 0, autoAlpha: 1 });
+    if (siblings.length) gsap.set(siblings, { x: 0, y: 170, scale: 1, rotation: 0, autoAlpha: 1 });
     next
       .to(findAll('.v6a-reading-ui'), { autoAlpha: 0, duration: 0.18 }, 0)
       .to(node.querySelector('.v6a-card-turn'), { rotateY: 0, duration: 0.41, ease: 'power2.inOut' }, 0)
-      .to(envelope.current, { ...DISCOVER_POSE, duration: 0.63, ease: 'power2.inOut' }, 0)
+      .to(envelope.current, { ...DISCOVER_POSE, y: fittedPoseY(DISCOVER_POSE), duration: 0.63, ease: 'power2.inOut' }, 0)
       .to(findAll('.v6a-discover-ui'), { autoAlpha: 1, duration: 0.34 }, 0.46);
     motionToFan(next, cards(), 0.12);
   };
@@ -412,7 +473,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
       .to(findAll('.v6a-reading-ui'), { autoAlpha: 0, duration: .2 }, 0)
       // Lift the card clear of the lip before moving it laterally over the mouth.
       .to(node, { y: -718, scale: 3.05, rotation: 0, duration: .23, ease: 'power2.out' }, 0)
-      .to(envelope.current, { ...COLLECTION_POSE, duration: .43, ease: 'sine.inOut' }, .23)
+      .to(envelope.current, { ...COLLECTION_POSE, y: fittedPoseY(COLLECTION_POSE, .035), duration: .43, ease: 'sine.inOut' }, .23)
       .to(node.querySelector('.v6a-card-turn'), { rotateY: -180, duration: .48, ease: 'power2.inOut' }, .03)
       .to(node, { x: 0, y: -373, scale: 1.52, duration: .43, ease: 'sine.inOut' }, .23)
       .set(stamp, { y: -86, scale: 1.2, rotation: 0, autoAlpha: 0 }, 0)
@@ -451,7 +512,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
   return (
     <section className="v6a" ref={root} data-phase={phase} data-busy={busy} aria-label="A 屏幕探索">
       <HomeHub active={atHome && phase === 'IDLE'} onNavigate={onNavigate} />
-      <div className="v6a-discover-ui v6a-discover-head"><h1 tabIndex={-1}>三校来信</h1></div>
+      <div className="v6a-discover-ui v6a-discover-head"><h1 tabIndex={-1}>三校来信 · 一叶留念</h1></div>
       <nav className="v6a-discover-ui v6a-filters" aria-label="按学校筛选" inert={phase !== 'DISCOVER'}>
         <button aria-pressed={filter.school === 'all'} onClick={() => changeFilter(FIRST)}>全部来信</button>
         {schools.map((school) => (
@@ -459,6 +520,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
             <i aria-hidden="true" style={{ background: school.accent }} />{school.name}
           </button>
         ))}
+        <button aria-pressed={filter.school === 'garden'} onClick={() => changeFilter({ school: 'garden', batch: 0 })}>广场纪念</button>
       </nav>
 
       <div className="v6a-paper-space">
@@ -535,8 +597,31 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
         <button className="v6-btn-text v6a-flip-hint" onClick={flip}>{front ? '翻回背面' : '翻到正面'} ↻</button>
         <button className="v6-btn-primary" onClick={collect}>{current && collected.has(current.id) ? '收回收藏套' : '完成数字收藏'} <span aria-hidden="true">↘</span></button>
         <button className="v6-btn-text" onClick={() => onNavigate('post-office', {
-          postcardId: current ? `po-school-${current.schoolId}` : undefined,
+          postcardId: current?.kind === 'garden' ? undefined : current ? `po-school-${current.schoolId}` : undefined,
         })}>用这张卡写信</button>
+        {current && (
+          <details className="v6a-related">
+            <summary>{current.kind === 'garden' ? '关于这张广场纪念卡' : currentEvents.length > 1 ? `查看本期 ${currentEvents.length} 则澳大公告` : '活动信息与来源'}</summary>
+            <div className="v6a-related-list">
+              {currentEvents.map((event) => {
+                const status = eventStatus(event);
+                return (
+                  <article key={event.id}>
+                    <span className="v6a-event-state" data-status={status}>
+                      {status === 'upcoming' ? '即将开始' : status === 'ongoing' ? '正在进行' : '已结束'}
+                    </span>
+                    <h3>{event.title}</h3>
+                    <p>{dateLabel(event)} {timeLabel(event) && `· ${timeLabel(event)}`}</p>
+                    <p>{event.location}</p>
+                    {event.source?.startsWith('https://') && (
+                      <a href={event.source} target="_blank" rel="noreferrer">查看澳大公告 ↗</a>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </details>
+        )}
       </div>
 
       <section className="v6a-collection v6a-complete-copy" inert={phase !== 'COMPLETE'} aria-label="数字收藏完成">
@@ -546,7 +631,7 @@ export function ExploreRoute({ atHome, collected, onCollect, onNavigate, onActiv
         <div>
           <button className="v6-btn-secondary" onClick={() => onNavigate('leaf-drop')}>去领实体卡 →</button>
           <button className="v6-btn-primary" onClick={() => onNavigate('post-office', {
-            postcardId: current ? `po-school-${current.schoolId}` : undefined,
+            postcardId: current?.kind === 'garden' ? undefined : current ? `po-school-${current.schoolId}` : undefined,
           })}>去时光邮局 →</button>
         </div>
       </section>

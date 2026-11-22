@@ -375,9 +375,9 @@ html, body, #root {
 .v6-garden-shadow {
   position: absolute;
   left: -8%;
-  top: -2%;
+  top: -27vh;
   width: 113%;
-  height: 53vh;
+  height: 80vh;
   transform: rotate(12deg) scaleY(1.45);
   transform-origin: top center;
   filter: blur(13px);

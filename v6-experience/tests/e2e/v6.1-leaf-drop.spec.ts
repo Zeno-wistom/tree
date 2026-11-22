@@ -42,7 +42,7 @@ test('C 普通访客看灯、等叶落稳并从侧盘取卡', async ({ page }, t
     return Math.hypot(leaf.x + leaf.width / 2 - tray.x - tray.width / 2, leaf.y + leaf.height / 2 - tray.y - tray.height / 2);
   });
   expect(landingOffset).toBeLessThan(3);
-  await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-16-routeC-visitor-landed.png` });
+  await page.screenshot({ path: testInfo.outputPath('visitor-landed.png') });
   await page.getByRole('button', { name: /确认取走这张叶形卡/ }).click();
   await expect(leafScene).toHaveAttribute('data-step', '7');
   await expect(page.getByRole('heading', { name: /已取走/ })).toBeVisible();
@@ -58,7 +58,7 @@ test('C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、
 
   for (const [setting, kind] of [
     ['正忙', '02-busy'],
-    ['全缺卡', '02-empty'],
+    ['主题卡领完', '02-empty'],
     ['雨风暂停', '02-paused'],
     ['故障暂停', '02-paused'],
     ['托盘占用', '02-paused'],
@@ -71,13 +71,7 @@ test('C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、
   }
 
   await enterLeafDrop(page, true);
-  await setDemo(page, '缺当期卡');
-  await start();
-  await expect(scene).toHaveAttribute('data-step', '2');
-  await page.getByRole('button', { name: /接受替代卡/ }).click();
-  await expect(page.getByRole('heading', { name: '请选择触发方式' })).toBeVisible();
-  await expect(scene.getByText(/夏.*同安红/)).toBeVisible();
-  await page.getByRole('button', { name: /^秋千触发/ }).click();
+  await requestLeaf(page, '秋千触发');
   await page.getByText('C 演示工具', { exact: true }).click();
   await page.getByRole('button', { name: /模拟未停稳/ }).click();
   await exception('03-04-unsafe');
@@ -132,4 +126,16 @@ test('C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、
   await page.getByText('C 演示工具', { exact: true }).click();
   await page.getByRole('button', { name: /工作人员检查并恢复领卡/ }).click();
   await expect(scene).toHaveAttribute('data-step', '1');
+});
+
+test('C 枝端预告期间侧盘被占用时中止发卡', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await enterLeafDrop(page, true);
+  await requestLeaf(page);
+  await page.getByRole('button', { name: /演示控制台/ }).click();
+  await page.getByRole('button', { name: /开始枝头预告/ }).click();
+  await expect(page.locator('.v6c')).toHaveAttribute('data-flight', 'signal');
+  await page.getByRole('button', { name: '托盘占用', exact: true }).click();
+  await expect(page.locator('.v6c')).toHaveAttribute('data-exception', '02-paused');
+  await expect(page.getByRole('button', { name: /确认取走这张叶形卡/ })).toHaveCount(0);
 });

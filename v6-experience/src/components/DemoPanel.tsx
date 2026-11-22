@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { seasonLeaves, seasonOrder, type RouteId } from '../data/catalog';
+import type { RouteId } from '../data/catalog';
 import { useDemoState } from '../hooks/useDemoState';
 import './demopanel.css';
 
@@ -22,21 +22,6 @@ export function DemoPanel({ route }: { route: RouteId }) {
 
       {open && (
         <div className="v6-demo-drawer">
-          {route === 'leaf-drop' && <div className="v6-demo-row">
-            <span>四季主题</span>
-            <div>
-              {seasonOrder.map((sid) => (
-                <button
-                  key={sid}
-                  className={config.season === sid ? 'is-on' : ''}
-                  onClick={() => setField('season', sid)}
-                >
-                  {seasonLeaves[sid].label}·{seasonLeaves[sid].variety}
-                </button>
-              ))}
-            </div>
-          </div>}
-
           {(route === 'swing' || route === 'leaf-drop') && <div className="v6-demo-row">
             <span>秋千状态</span>
             <div>
@@ -81,13 +66,12 @@ export function DemoPanel({ route }: { route: RouteId }) {
           </div>
 
           <div className="v6-demo-row">
-            <span>库存状态</span>
+            <span>主题叶卡库存</span>
             <div>
               {(
                 [
                   ['full', '充足'],
-                  ['current_empty', '缺当期卡'],
-                  ['all_empty', '全缺卡'],
+                  ['empty', '主题卡领完'],
                 ] as const
               ).map(([val, label]) => (
                 <button

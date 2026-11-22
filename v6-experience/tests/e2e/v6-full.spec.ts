@@ -37,7 +37,7 @@ test.describe('《拾花一叶》全流程与双分辨率验收', () => {
     const opener = page.getByRole('button', { name: /轻触拆开校园来信/ });
     await opener.click();
     await expect(scene).toHaveAttribute('data-phase', 'DISCOVER');
-    await expect(scene.locator('.v6a-card-writing img')).toHaveCount(3);
+    await expect(scene.locator('.v6a-card-writing img')).toHaveCount(4);
     for (const card of ['um', 'upm', 'utm']) {
       await expect(scene.locator(`.v6a-card-writing img[src$="${card}-back.webp"]`)).toHaveCount(1);
     }
@@ -46,15 +46,15 @@ test.describe('《拾花一叶》全流程与双分辨率验收', () => {
     const filters = page.getByRole('navigation', { name: '按学校筛选' });
     await filters.getByRole('button', { name: '澳门大学', exact: true }).click();
     await expect(scene).toHaveAttribute('data-busy', 'false');
-    await expect(scene.locator('.v6a-event')).toHaveCount(2);
-    const exploreCard = page.getByRole('button', { name: /冬日校园漫游/ });
+    await expect(scene.locator('.v6a-event')).toHaveCount(1);
+    const exploreCard = page.getByRole('button', { name: /澳大45周年/ });
     const paper = await exploreCard.locator('..').elementHandle();
     await exploreCard.click();
     const back = page.getByRole('button', { name: '明信片背面，翻到正面' });
     const front = page.getByRole('button', { name: '明信片正面，翻回背面' });
     await expect(back).toBeEnabled();
-    await expect(page.getByRole('heading', { name: '冬日校园漫游' })).toBeVisible();
-    await expect(page.getByText('非官方演示活动', { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: '澳大45周年 · 诺贝尔奖得主讲座' })).toBeVisible();
+    await expect(page.getByText('澳大公告 · 讲座', { exact: true }).first()).toBeVisible();
     expect(await paper?.evaluate((node) => node.isConnected)).toBe(true);
     await expect(back).toBeFocused();
 
@@ -62,7 +62,7 @@ test.describe('《拾花一叶》全流程与双分辨率验收', () => {
     const hit = await back.boundingBox();
     if (!hit) throw new Error('Postcard missing');
     await page.mouse.move(hit.x + hit.width * 0.77, hit.y + hit.height * 0.30);
-    const surface = scene.locator('[data-event="winter"] .v6a-card-tilt');
+    const surface = scene.locator('[data-event="nobel"] .v6a-card-tilt');
     await expect.poll(() => surface.evaluate((el) => getComputedStyle(el).transform)).not.toBe('none');
     await page.mouse.move(65, 95);
     await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-03-routeA-postcard-back.png` });
@@ -86,8 +86,62 @@ test.describe('《拾花一叶》全流程与双分辨率验收', () => {
 
     await home.click();
     await opener.click();
-    await expect(page.getByRole('button', { name: /冬日校园漫游.*已数字收藏/ })).toBeEnabled();
+    await expect(page.getByRole('button', { name: /澳大45周年.*已数字收藏/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /重新拆开校园来信/ })).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+
+  test('四卡一屏、广场纪念卡完整交互与树枝屏外延伸', async ({ page }, testInfo) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error' || message.type() === 'warning') errors.push(message.text());
+    });
+    await page.goto('/');
+    await page.evaluate(() => document.fonts.ready);
+    const viewport = page.viewportSize()!;
+    const scene = page.locator('.v6a');
+    const screenshot = (state: string) => page.screenshot({ path: `docs/v6.2-final/${testInfo.project.name}-${state}.png` });
+
+    for (const [x, y] of [[0, 0], [viewport.width - 1, 0], [0, viewport.height - 1], [viewport.width - 1, viewport.height - 1]]) {
+      await page.mouse.move(x, y);
+      await page.waitForTimeout(450);
+      const ends = await page.locator('.v6-home-bough .v6-main-bough').evaluate((path) => {
+        const svgPath = path as SVGPathElement;
+        const matrix = svgPath.getScreenCTM()!;
+        return [svgPath.getPointAtLength(0), svgPath.getPointAtLength(svgPath.getTotalLength())]
+          .map((point) => new DOMPoint(point.x, point.y).matrixTransform(matrix))
+          .map((point) => ({ x: point.x, y: point.y }));
+      });
+      expect(ends.every((point) => point.x < -20 || point.x > viewport.width + 20)).toBe(true);
+    }
+
+    const opener = page.getByRole('button', { name: /轻触拆开校园来信/ });
+    await opener.click();
+    await expect(scene).toHaveAttribute('data-phase', 'DISCOVER');
+    await expect(scene.locator('.v6a-event')).toHaveCount(4);
+    await expect(scene.locator('.v6a-pager')).toHaveCount(0);
+    await screenshot('four-cards');
+
+    await page.getByRole('navigation', { name: '按学校筛选' }).getByRole('button', { name: '广场纪念' }).click();
+    await expect(scene.locator('.v6a-event')).toHaveCount(1);
+    await page.locator('[data-event="garden-memory"] .v6a-event-hit').click();
+    await expect(page.getByText('关于这张广场纪念卡')).toBeVisible();
+    await page.getByText('关于这张广场纪念卡').click();
+    await expect(page.locator('[data-event="garden-memory"]').getByText('广场纪念 · 项目原创演示卡', { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: '明信片背面，翻到正面' })).toBeEnabled();
+    await page.getByRole('button', { name: '明信片背面，翻到正面' }).click();
+    await expect(page.getByRole('button', { name: '明信片正面，翻回背面' })).toBeEnabled();
+    await expect(page.getByRole('img', { name: '德智广场 · 广场纪念明信片正面' })).toBeVisible();
+    await screenshot('garden-front');
+    await page.getByRole('button', { name: /完成数字收藏/ }).click();
+    await expect(page.getByRole('heading', { name: '已数字收藏' })).toBeVisible();
+    await expect(page.locator('.v6a-complete-copy')).toContainText('德智广场 · 拾花一叶');
+
+    await page.getByRole('button', { name: '← 返回树下', exact: true }).click();
+    await opener.click();
+    await page.getByRole('navigation', { name: '按学校筛选' }).getByRole('button', { name: '广场纪念' }).click();
+    await expect(page.locator('[data-event="garden-memory"] .v6a-event-hit')).toHaveAccessibleName(/已数字收藏/);
     expect(errors).toEqual([]);
   });
 
@@ -121,8 +175,8 @@ test.describe('《拾花一叶》全流程与双分辨率验收', () => {
     await page.getByRole('button', { name: /C 实体领卡/ }).first().click();
 
     // Normal 01 -> 07 flow
-    await expect(page.getByRole('heading', { name: /树枝会飘下一张叶形明信片/ })).toBeVisible();
-    await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-08-routeC-step01.png` });
+    await expect(page.getByRole('heading', { name: /等一片叶.*从枝头落下/ })).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath('routeC-intro.png') });
 
     await page.getByRole('button', { name: /领实体叶形明信片/ }).click();
     await expect(page.getByRole('heading', { name: /请选择触发方式/ })).toBeVisible();
@@ -132,7 +186,7 @@ test.describe('《拾花一叶》全流程与双分辨率验收', () => {
 
     await page.getByRole('button', { name: /模拟停稳并落区清空/ }).click();
     await expect(page.getByRole('heading', { name: /明信片到了 → 侧边取卡盘/ })).toBeVisible();
-    await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-09-routeC-step06-landed.png` });
+    await page.screenshot({ path: testInfo.outputPath('routeC-landed.png') });
 
     await page.getByRole('button', { name: /确认取走这张叶形卡/ }).click();
     await expect(page.getByRole('heading', { name: /已取走/ })).toBeVisible();
@@ -144,7 +198,7 @@ test.describe('《拾花一叶》全流程与双分辨率验收', () => {
     await page.getByRole('button', { name: /收起演示控制台/ }).click();
     await page.getByRole('button', { name: /领实体叶形明信片/ }).click();
     await expect(page.getByRole('heading', { name: /当前暂不可开启实体领卡/ })).toBeVisible();
-    await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-10-routeC-exception02.png` });
+    await page.screenshot({ path: testInfo.outputPath('routeC-paused.png') });
 
     // Verify Route D still opens cleanly while C is paused
     await page.getByRole('button', { name: /前往时光邮局/ }).click();

@@ -53,21 +53,22 @@ test('B 与 D 正常动效、卡片拖动和离场重置', async ({ page }, test
   expect(errors).toEqual([]);
 });
 
-test('C 支持四季主题且访客场景隐藏演示抽屉', async ({ page }, testInfo) => {
+test('C 四季卡始终旁侧自取，枝端只发公共主题纪念卡', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  for (const [season, label] of [
-    ['spring', '春 · 绿樱'], ['summer', '夏 · 同安红'],
-    ['autumn', '秋 · 加州黄金'], ['winter', '冬 · 漳红樱'],
-  ]) {
+  for (const season of ['spring', 'winter']) {
     await page.goto('/?season=' + season);
     await page.getByRole('button', { name: 'C 实体领卡', exact: true }).click();
-    const atlas = page.getByRole('region', { name: '四季叶形卡预览' });
+    const atlas = page.getByRole('region', { name: '四季叶形卡自取陈列' });
+    await expect(atlas).toBeVisible();
     await expect(atlas.locator('figure')).toHaveCount(4);
-    await expect(atlas.locator('figure[data-current]')).toHaveText(label);
-    await expect(atlas.locator('figure[data-current] img')).toHaveAttribute('src', new RegExp(season + '-front\\.png$'));
+    await expect(atlas).toContainText('旁侧陈列架自取');
     await expect(page.getByText('C 演示工具', { exact: true })).toHaveCount(0);
-    if (season === 'spring') {
-      await page.screenshot({ path: `docs/v6.2-rebuild/${testInfo.project.name}-08-routeC-visitor.png` });
-    }
+    await page.getByRole('button', { name: /领实体叶形明信片/ }).click();
+    await page.getByRole('button', { name: /^实体按键/ }).click();
+    await page.getByRole('button', { name: /开始枝头预告/ }).click();
+    await expect(page.getByRole('img', { name: /拾花一叶.*主题叶形纪念卡正面/ })).toBeVisible();
+    await expect(atlas).toBeVisible();
+    await page.getByRole('button', { name: /确认取走这张叶形卡/ }).click();
+    await expect(page.getByRole('heading', { name: /^已取走/ })).toBeVisible();
   }
 });

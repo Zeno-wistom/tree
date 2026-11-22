@@ -3,7 +3,7 @@ import type { SeasonId } from '../data/catalog';
 
 export type SwingState = 'available' | 'occupied' | 'closed';
 export type DeviceStatus = 'ready' | 'busy' | 'fault';
-export type StockStatus = 'full' | 'current_empty' | 'all_empty';
+export type StockStatus = 'full' | 'empty';
 export type WeatherStatus = 'normal' | 'wind_rain';
 export type TrayStatus = 'empty' | 'occupied';
 export type DropOutcome = 'normal' | 'zero' | 'jam' | 'double' | 'off_target';

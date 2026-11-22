@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
-  eventPostcards,
+  eventStatus,
   events,
   postOfficeCatalog,
   schools,
   seasonLeaves,
   seasonOrder,
 } from '../src/data/catalog';
+import { gardenCard } from '../src/data/gardenCard';
 
 describe('V6 Catalog & Asset Mapping Integrity', () => {
   it('defines all three universities with authentic flowers and A6 assets', () => {
@@ -18,13 +19,18 @@ describe('V6 Catalog & Asset Mapping Integrity', () => {
     });
   });
 
-  it('preserves all 6 demonstration events with bidirectional postcard ID matching', () => {
+  it('defines three verified UM notices, two marked demonstrations and one garden card', () => {
     expect(events).toHaveLength(6);
-    expect(eventPostcards).toHaveLength(6);
-    events.forEach((ev) => {
-      const card = eventPostcards.find((p) => p.id === ev.postcardId && p.eventId === ev.id);
-      expect(card).toBeDefined();
-    });
+    expect(events.filter((event) => event.verified)).toHaveLength(3);
+    expect(events.filter((event) => event.category.includes('非官方资讯'))).toHaveLength(2);
+    expect(events.filter((event) => event.kind === 'garden')).toHaveLength(1);
+  });
+
+  it('derives ended status from the actual start and end times', () => {
+    const lecture = events.find((event) => event.id === 'thanksgiving')!;
+    expect(eventStatus(lecture, Date.parse('2026-11-25T14:30:00+08:00'))).toBe('ongoing');
+    expect(eventStatus(lecture, Date.parse('2026-11-25T16:01:00+08:00'))).toBe('ended');
+    expect(eventStatus(lecture, Date.parse('2026-11-22T12:00:00+08:00'))).toBe('upcoming');
   });
 
   it('defines all 4 seasonal bougainvillea leaf cards and poster variants without mixing vase set', () => {
@@ -48,5 +54,11 @@ describe('V6 Catalog & Asset Mapping Integrity', () => {
     expect(postOfficeCatalog).toHaveLength(7);
     expect(postOfficeCatalog.filter((c) => c.series === 'school')).toHaveLength(3);
     expect(postOfficeCatalog.filter((c) => c.series === 'season')).toHaveLength(4);
+  });
+
+  it('provides original garden artwork without presenting it as a fourth school', () => {
+    expect(gardenCard.name).toBe('德智广场');
+    expect(gardenCard.frontImage).toContain('dezhi-front');
+    expect(postOfficeCatalog.some((card) => card.title.includes('德智广场'))).toBe(false);
   });
 });

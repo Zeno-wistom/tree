@@ -242,7 +242,7 @@
 .v6c-paper {
   grid-area: 1 / 2;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto auto;
   border: 0;
 }
 
@@ -298,10 +298,40 @@
   line-height: 1.75;
 }
 
+.v6c-tribute {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 13px;
+}
+
+.v6c-tribute img {
+  width: clamp(64px, 9vh, 92px);
+  height: auto;
+  aspect-ratio: 1;
+  rotate: -9deg;
+  filter: drop-shadow(2px 4px 3px #544d3b44);
+}
+
+.v6c-tribute figcaption {
+  display: grid;
+  gap: 5px;
+}
+
+.v6c-tribute strong {
+  color: #315746;
+  font: 700 21px/1.2 var(--v6-serif);
+}
+
+.v6c-tribute span {
+  color: var(--v6-ink-soft);
+  font-size: 13px;
+}
+
 .v6c-specimens {
-  margin-top: 25px;
-  padding: 12px 0 11px;
-  border-block: 1px solid #c5baa2;
+  padding: 12px 12px 7px;
+  border-block: 1px solid #bdb49a;
+  background: #f6eed747;
 }
 
 .v6c-specimen-heading {
@@ -309,7 +339,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .v6c-specimen-heading h2 {
@@ -339,12 +369,8 @@
   text-align: center;
 }
 
-.v6c-specimen-row figure[data-current] {
-  background: #dedfc06b;
-}
-
 .v6c-specimen-row img {
-  width: min(100%, 90px);
+  width: min(100%, clamp(56px, 8.5vh, 85px));
   height: auto;
   aspect-ratio: 1;
   object-fit: contain;
@@ -360,10 +386,6 @@
   color: #454e3e;
   font-size: 13px;
   text-wrap: balance;
-}
-
-.v6c-specimen-row figure[data-current] figcaption {
-  font-weight: 700;
 }
 
 .v6c-btns {
@@ -523,7 +545,16 @@
 
 @media (max-height: 770px) {
   .v6c-action { padding-block: 8px; }
-  .v6c-specimens { margin-top: 15px; }
-  .v6c-specimen-row img { width: min(100%, 66px); }
   .v6c-route-name { margin-bottom: 12px; }
+}
+
+@media (max-height: 650px) {
+  .v6c { inset-block-start: 75px; }
+  .v6c-action h1 { margin-bottom: 9px; }
+  .v6c-tribute { margin-bottom: 6px; }
+  .v6c-tribute img { width: 52px; }
+  .v6c-btns { margin-top: 12px; }
+  .v6c-specimen-row figure { padding-block: 3px; gap: 3px; }
+  .v6c-specimen-row img { width: min(100%, 51px); }
+  .v6c-note-foot { min-height: 38px; }
 }

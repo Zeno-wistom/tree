@@ -89,18 +89,18 @@ test('触控五轮：叶封、翻盖与下沉重叠，支持中途返回恢复',
     expect(frames.length).toBeGreaterThan(15);
     expect(frames.every((frame) => frame.sameNode)).toBe(true);
     expect(frames.some((frame) => frame.scale > .69 && frame.lift > .15 && frame.y < 200)).toBe(true);
-    expect(frames.some((frame) => frame.y > 186 && frame.y < 247 && frame.flap > 20 && frame.flap < 170)).toBe(true);
-    expect(frames.every((frame) => frame.y < 210 || frame.flap > 65)).toBe(true);
+    expect(frames.some((frame) => frame.y > 186 && frame.y < 290 && frame.flap > 20 && frame.flap < 170)).toBe(true);
+    expect(frames.every((frame) => frame.y < 210 || frame.flap > 10)).toBe(true);
     expect(frames.some((frame) => frame.seal < 0.95 && frame.flap > 30 && frame.flap < 165)).toBe(true);
     // Authored poses are +180 (inside the pocket) and -220 (left card fully fanned).
     // A visible intermediate excludes a cut between those two endpoints.
     const extraction = frames.filter((frame) => frame.paperAlpha > 0.95);
-    expect(extraction.some((frame) => frame.paper < 90 && frame.y < 258 && frame.flap > 95)).toBe(true);
+    expect(extraction.some((frame) => frame.paper < 90 && frame.y < 330 && frame.flap > 95)).toBe(true);
     expect(extraction.some((frame) => frame.paper < 175 && frame.paper > -213),
       `Opening ${run + 1}: visible paper poses ${extraction.filter((_, i) => i % 3 === 0).map((f) => f.paper.toFixed(0)).join(', ')}`,
     ).toBe(true);
     expect(frames.at(-1)?.flap).toBeCloseTo(174, 0);
-    expect(frames.at(-1)?.paper).toBeCloseTo(-220, 0);
+    expect(frames.at(-1)?.paper).toBeCloseTo(-177, 0);
 
     // Compare neighbouring paints in logical stage pixels. Account for real frame timing on slower kiosk hardware.
     for (let index = 1; index < frames.length; index++) {

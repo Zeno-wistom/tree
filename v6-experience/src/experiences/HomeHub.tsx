@@ -1,8 +1,7 @@
 import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { seasonLeaves, type RouteId } from '../data/catalog';
-import { useDemoState } from '../hooks/useDemoState';
+import { type RouteId } from '../data/catalog';
 import { useChime } from '../hooks/useChime';
 import { GardenBough, SwingRig } from '../components/GardenBackdrop';
 import { MacauTileBorder } from '../components/MacauOrnaments';
@@ -18,9 +17,8 @@ interface HomeHubProps {
 export function HomeHub({ active, onNavigate }: HomeHubProps) {
   const scene = useRef<HTMLDivElement>(null);
   const canopy = useRef<HTMLDivElement>(null);
-  const { config } = useDemoState();
   const { play } = useChime();
-  const leaf = seasonLeaves[config.season];
+  const leaf = { frontImage: '/assets/postcards/leaf/tribute-front.svg' };
 
   useGSAP(() => {
     const stage = scene.current;
@@ -84,8 +82,13 @@ export function HomeHub({ active, onNavigate }: HomeHubProps) {
 
   return (
     <div className="v6-home" ref={scene} inert={!active}>
-      <div className="v6-home-canopy" ref={canopy} aria-hidden="true">
-        <GardenBough className="v6-home-bough" />
+      <div className="v6-home-canopy" aria-hidden="true">
+        <div className="v6-home-canopy-depth" ref={canopy}>
+          <div className="v6-home-bough-motion"><GardenBough className="v6-home-bough" /></div>
+        </div>
+      </div>
+      <div className="v6-home-petals" aria-hidden="true">
+        {Array.from({ length: 7 }, (_, index) => <i key={index} />)}
       </div>
 
       <svg className="v6-home-wind" viewBox="0 0 280 64" fill="none" aria-hidden="true">

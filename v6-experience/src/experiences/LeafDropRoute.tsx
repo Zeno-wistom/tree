@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
-import { seasonLeaves, seasonOrder, type RouteId, type SeasonId } from '../data/catalog';
+import { seasonLeaves, seasonOrder, type RouteId } from '../data/catalog';
 import { useDemoState } from '../hooks/useDemoState';
 import { useObjectScale } from '../hooks/useObjectScale';
 import { useChime } from '../hooks/useChime';
@@ -26,6 +26,8 @@ type ExceptionKind =
 type ReleaseBlocker = '02-paused' | '02-busy' | '02-empty' | '03-04-unsafe';
 
 const stepLabels = ['领取意图', '请求受理', '选择触发', '请求与停稳', '枝头预告与飘落', '落盘与取卡提示', '取走与复位'];
+const tributeCardFront = '/assets/postcards/leaf/tribute-front.svg';
+const tributeCardBack = '/assets/postcards/leaf/tribute-back.svg';
 
 const flightInstructions: Record<DropPhase, [string, string]> = {
   signal: ['请看向亮灯的树枝', '枝端暖灯亮起。请停在原处，等叶片落入侧盘。'],
@@ -56,6 +58,28 @@ function ActionNote({ title, children }: { title: ReactNode; children: ReactNode
       <h1 tabIndex={-1}>{title}</h1>
       {children}
     </>
+  );
+}
+
+function SeasonDisplay() {
+  return (
+    <section className="v6c-specimens" aria-label="四季叶形卡自取陈列">
+      <div className="v6c-specimen-heading">
+        <h2>四季叶形卡</h2>
+        <span>旁侧陈列架自取</span>
+      </div>
+      <div className="v6c-specimen-row">
+        {seasonOrder.map((season) => {
+          const specimen = seasonLeaves[season];
+          return (
+            <figure key={season}>
+              <img src={specimen.frontImage} alt="" width={90} height={90} />
+              <figcaption>{specimen.label} · {specimen.variety}</figcaption>
+            </figure>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -126,23 +150,18 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
   const [step, setStep] = useState<StepNum>(1);
   const [trigger, setTrigger] = useState<TriggerMethod | null>(null);
   const [exception, setException] = useState<ExceptionKind | null>(null);
-  const [needsAltConfirm, setNeedsAltConfirm] = useState(false);
-  const [activeSeason, setActiveSeason] = useState<SeasonId>(config.season);
   const [dropPhase, setDropPhase] = useState<DropPhase>('signal');
   const [mechanicalFailure, setMechanicalFailure] = useState<MechanicalFailure>('zero');
   const [cardFlipBack, setCardFlipBack] = useState(false);
   const [showDirectionHint, setShowDirectionHint] = useState(false);
 
-  const card = seasonLeaves[activeSeason];
-  const altSeason = seasonOrder[(seasonOrder.indexOf(config.season) + 1) % seasonOrder.length];
   const branchLit = step === 5 && !exception;
   const canTake = step === 6 && !exception;
   const trayOccupied = config.trayStatus === 'occupied';
   const trayLit = canTake || trayOccupied || exception === '07-leftover';
   const swingUnavailable = trigger === 'swing' && config.swingState !== 'available';
   const requestBlocker = isLeafDropPaused ? '02-paused' : config.deviceStatus === 'busy' ? '02-busy' : null;
-  const noCard = config.stockStatus === 'all_empty'
-    || (config.stockStatus === 'current_empty' && activeSeason === config.season);
+  const noCard = config.stockStatus === 'empty';
   const releaseBlocker: ReleaseBlocker | null = requestBlocker
     ?? (noCard ? '02-empty' : swingUnavailable ? '03-04-unsafe' : null);
   const latestReleaseBlocker = useRef(releaseBlocker);
@@ -151,10 +170,6 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
     latestChime.current = play;
     latestReleaseBlocker.current = releaseBlocker;
   }, [play, releaseBlocker]);
-
-  useEffect(() => {
-    if (step === 1) setActiveSeason(config.season);
-  }, [config.season, step]);
 
   useEffect(() => {
     onActiveChange?.(step >= 2 && step <= 6 && !exception);
@@ -202,10 +217,8 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
     setStep(1);
     setTrigger(null);
     setException(null);
-    setNeedsAltConfirm(false);
     setDropPhase('signal');
     setCardFlipBack(false);
-    setActiveSeason(config.season);
     gsap.set(leafCardRef.current, { x: 0, y: 0, rotation: -14, scale: 0.48, autoAlpha: 0 });
   });
 
@@ -214,35 +227,23 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
     play('tap');
     setTrigger(directButton ? 'button' : null);
     setException(null);
-    setNeedsAltConfirm(false);
     setStep(2);
   };
 
   useEffect(() => {
-    if (step !== 2 || exception || needsAltConfirm) return;
+    if (step !== 2 || exception) return;
 
     const timer = window.setTimeout(() => {
-      if (requestBlocker || config.stockStatus === 'all_empty') {
+      if (requestBlocker || noCard) {
         latestChime.current('alert');
         setException(requestBlocker ?? '02-empty');
-      } else if (config.stockStatus === 'current_empty') {
-        setNeedsAltConfirm(true);
       } else {
-        setActiveSeason(config.season);
         setStep(trigger === 'button' ? 4 : 3);
       }
     }, 340);
 
     return () => window.clearTimeout(timer);
-  }, [config.season, config.stockStatus, exception, needsAltConfirm, requestBlocker, step, trigger]);
-
-  const confirmAlternativeCard = () => {
-    play('tap');
-    setActiveSeason(altSeason);
-    setTrigger(null);
-    setNeedsAltConfirm(false);
-    setStep(3);
-  };
+  }, [exception, noCard, requestBlocker, step, trigger]);
 
   const chooseTrigger = (method: TriggerMethod) => {
     play('tap');
@@ -446,7 +447,7 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
           )}
 
           {exception === '03-04-unsafe' && (
-            <ActionNote title={swingUnavailable ? '秋千当前不可用' : '模拟状态 · 秋千未停稳或有人进入落区'}>
+            <ActionNote title={swingUnavailable ? '秋千当前不可用' : '请等待停稳与落区清空'}>
               <p>{swingUnavailable
                 ? '请等秋千恢复可用，或改到屏幕旁，用实体按键触发。'
                 : '请等秋千完全停稳，确认落区无人后再继续。也可改到屏幕旁，用实体按键触发。'}</p>
@@ -460,7 +461,7 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
 
           {exception === '05-mechanical' && (
             <ActionNote title="暂不可领取">
-              <p>{mechanicalMessages[mechanicalFailure]} 发卡已暂停，<strong>不会自动补发</strong>，请等工作人员检查。</p>
+              <p>{config.demoMode && mechanicalMessages[mechanicalFailure]} 发卡已暂停，<strong>不会自动补发</strong>，请等工作人员检查。</p>
               <div className="v6c-btns">
                 <button className="v6-btn-primary" onClick={() => onNavigate('explore')}>先体验其他路线（A）</button>
               </div>
@@ -486,51 +487,27 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
           )}
 
           {!exception && step === 1 && (
-            <ActionNote title={<>树枝会飘下<span className="v6c-title-phrase">一张叶形明信片</span></>}>
-              <p>枝头亮起暖金灯时，留在原处等一等。你的明信片会飘进摆动区外侧的取卡盘。</p>
-              <section className="v6c-specimens" aria-label="四季叶形卡预览">
-                <div className="v6c-specimen-heading">
-                  <h2>四季叶形卡</h2>
-                  <span>本期 · {card.label} · {card.variety}</span>
-                </div>
-                <div className="v6c-specimen-row">
-                  {seasonOrder.map((season) => {
-                    const specimen = seasonLeaves[season];
-                    return (
-                      <figure key={season} data-current={season === activeSeason ? '' : undefined}>
-                        <img src={specimen.frontImage} alt="" width={90} height={90} />
-                        <figcaption>{specimen.label} · {specimen.variety}</figcaption>
-                      </figure>
-                    );
-                  })}
-                </div>
-              </section>
+            <ActionNote title={<>等一片叶，<br />从枝头落下</>}>
+              <figure className="v6c-tribute">
+                <img src={tributeCardFront} alt="" width={76} height={76} />
+                <figcaption><strong>拾花一叶</strong><span>主题叶形纪念卡 · 演示设计</span></figcaption>
+              </figure>
+              <p>用秋千或屏幕旁的按键触发。等落区清空，枝头暖灯亮起，叶卡就会落入摆动区外侧的取卡盘。</p>
               <div className="v6c-btns">
                 <button className="v6-btn-primary" onClick={() => beginAcceptance()}>领实体叶形明信片 →</button>
               </div>
             </ActionNote>
           )}
 
-          {!exception && step === 2 && !needsAltConfirm && (
+          {!exception && step === 2 && (
             <ActionNote title="正在确认本轮领卡">
-              <p role="status">先检查当期库存与侧盘，再继续。</p>
-            </ActionNote>
-          )}
-
-          {!exception && step === 2 && needsAltConfirm && (
-            <ActionNote title={'当期「' + seasonLeaves[config.season].variety + '」已领完'}>
-              <p>要换一张 <strong>{seasonLeaves[altSeason].label} · {seasonLeaves[altSeason].variety}</strong> 叶形明信片吗？</p>
-              <div className="v6c-btns">
-                <button className="v6-btn-primary" onClick={confirmAlternativeCard}>接受替代卡，继续领卡 →</button>
-                <button className="v6-btn-secondary" onClick={() => onNavigate('explore')}>改去屏幕数字收藏（A）</button>
-                <button className="v6-btn-text" onClick={resetRound}>暂不领取，返回</button>
-              </div>
+              <p role="status">请稍候，正在准备叶形纪念卡。</p>
             </ActionNote>
           )}
 
           {!exception && step === 3 && (
             <ActionNote title="请选择触发方式">
-              <p>秋千和屏幕旁的按键都能送出这张 <strong>{card.label} · {card.variety}</strong>。</p>
+              <p>两种方式都可领取「拾花一叶」主题叶形纪念卡。</p>
               <div className="v6c-trigger-grid">
                 <button
                   className="v6c-trigger-card"
@@ -606,6 +583,7 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
           )}
         </div>
 
+        <SeasonDisplay />
         <footer className="v6c-note-foot">
           <span>屏幕模拟 · 发卡装置未连接</span>
           {config.demoMode && (
@@ -667,8 +645,8 @@ export function LeafDropRoute({ onNavigate, onActiveChange }: LeafDropRouteProps
           />
           <div className="v6c-leaf-card" ref={leafCardRef} aria-hidden={!canTake}>
             <img
-              src={cardFlipBack ? card.backImage : card.frontImage}
-              alt={card.variety + '叶形卡' + (cardFlipBack ? '背面' : '正面')}
+              src={cardFlipBack ? tributeCardBack : tributeCardFront}
+              alt={cardFlipBack ? '拾花一叶主题叶形纪念卡背面' : '拾花一叶主题叶形纪念卡正面'}
             />
           </div>
           {canTake && (
