@@ -6,7 +6,7 @@ export default defineConfig({
   expect: { timeout: 8_000 },
   fullyParallel: false,
   retries: 0,
-  reporter: [['list'], ['json', { outputFile: 'docs/e2e-results.json' }]],
+  reporter: [['list'], ['json', { outputFile: 'docs/v6.2/e2e-results.json' }]],
   use: {
     baseURL: 'http://127.0.0.1:4176',
     launchOptions: {

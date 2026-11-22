@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { sessionConfig, type RouteId } from './data/catalog';
 import { DemoProvider, useDemoState } from './hooks/useDemoState';
 import { BrandSeal } from './components/MacauOrnaments';
+import { GardenBackdrop } from './components/GardenBackdrop';
 import { DemoPanel } from './components/DemoPanel';
 import { ExploreRoute } from './experiences/ExploreRoute';
 import { SwingRoute } from './experiences/SwingRoute';
@@ -9,14 +11,23 @@ import { LeafDropRoute } from './experiences/LeafDropRoute';
 import { PostOfficeRoute } from './experiences/PostOfficeRoute';
 import './styles/tokens.css';
 
+const isSharedEnvelopeScene = (route: RouteId) => route === 'home' || route === 'explore';
+
 function KioskShell() {
   const rootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const lastActivity = useRef(Date.now());
   const warnedAt = useRef<number | null>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+  const currentRoute = useRef<RouteId>('home');
+  const transition = useRef<ViewTransition | null>(null);
+  const navigationId = useRef(0);
 
   const [route, setRoute] = useState<RouteId>('home');
+  const [collected, setCollected] = useState<ReadonlySet<string>>(() => new Set());
+  const collectCard = useCallback((id: string) => {
+    setCollected((previous) => previous.has(id) ? previous : new Set([...previous, id]));
+  }, []);
   const [postOfficeInitialCard, setPostOfficeInitialCard] = useState<string | undefined>(undefined);
   const [warning, setWarning] = useState(false);
   const [seconds, setSeconds] = useState(15);
@@ -25,6 +36,8 @@ function KioskShell() {
 
   const { config, setField } = useDemoState();
 
+  useEffect(() => () => transition.current?.skipTransition(), []);
+
   const markActivity = useCallback(() => {
     lastActivity.current = Date.now();
   }, []);
@@ -32,12 +45,42 @@ function KioskShell() {
   const navigate = useCallback(
     (next: RouteId, opts?: { postcardId?: string }) => {
       markActivity();
-      if (next === 'post-office') setPostOfficeInitialCard(opts?.postcardId);
-      setRoute(next);
-      requestAnimationFrame(() => {
-        const selector = next === 'explore' ? '.v6a-open:enabled' : 'main h1';
-        rootRef.current?.querySelector<HTMLElement>(selector)?.focus({ preventScroll: true });
-      });
+      if (currentRoute.current === next && !transition.current) return;
+      const id = ++navigationId.current;
+      transition.current?.skipTransition();
+      transition.current = null;
+      const shell = rootRef.current;
+      shell?.removeAttribute('data-scene-transition');
+
+      const changeRoute = () => {
+        if (navigationId.current !== id) return;
+        currentRoute.current = next;
+        if (next === 'post-office') setPostOfficeInitialCard(opts?.postcardId);
+        setRoute(next);
+        requestAnimationFrame(() => {
+          if (navigationId.current !== id) return;
+          const selector = next === 'explore' ? '.v6a-open:enabled' : 'main h1';
+          rootRef.current?.querySelector<HTMLElement>(selector)?.focus({ preventScroll: true });
+        });
+      };
+
+      // Home and A already share a physical envelope. Other garden views can overlap
+      // using the browser's captured paints, with an in-place update as fallback.
+      const shared = isSharedEnvelopeScene(currentRoute.current) && isSharedEnvelopeScene(next);
+      if (!shared && !warnedAt.current && !dialogRef.current?.open && document.startViewTransition &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !document.hidden) {
+        shell?.setAttribute('data-scene-transition', '');
+        const active = document.startViewTransition(() => flushSync(changeRoute));
+        transition.current = active;
+        const clear = () => {
+          if (transition.current !== active) return;
+          transition.current = null;
+          shell?.removeAttribute('data-scene-transition');
+        };
+        void active.finished.then(clear, clear);
+      } else {
+        changeRoute();
+      }
     },
     [markActivity]
   );
@@ -49,6 +92,11 @@ function KioskShell() {
     setLeafDropActive(false);
     navigate('home');
   }, [navigate]);
+
+  const finishSession = useCallback(() => {
+    setCollected(new Set());
+    resetToHome();
+  }, [resetToHome]);
 
   const resumeSession = useCallback(() => {
     warnedAt.current = null;
@@ -87,7 +135,7 @@ function KioskShell() {
       if (warnedAt.current !== null) {
         const left = Math.max(0, Math.ceil((sessionConfig.warningMs - (now - warnedAt.current)) / 1000));
         setSeconds(left);
-        if (left <= 0) resetToHome();
+        if (left <= 0) finishSession();
       } else if (now - lastActivity.current >= idleMs) {
         previousFocus.current = document.activeElement as HTMLElement;
         warnedAt.current = now;
@@ -102,7 +150,7 @@ function KioskShell() {
       el?.removeEventListener('keydown', onAct);
       el?.removeEventListener('input', onAct);
     };
-  }, [route, resetToHome]);
+  }, [route, finishSession]);
 
   useEffect(() => {
     if (warning && !dialogRef.current?.open) {
@@ -115,6 +163,7 @@ function KioskShell() {
   return (
     <div className="v6-root" ref={rootRef} data-route={route} data-season={config.season}>
       <div className="v6-stage">
+        <GardenBackdrop />
         <header className="v6-header">
           <button className="v6-brand" onClick={resetToHome} aria-label="拾花一叶，返回德智树下首页">
             <BrandSeal />
@@ -150,6 +199,8 @@ function KioskShell() {
           {(route === 'home' || route === 'explore') && (
             <ExploreRoute
               atHome={route === 'home'}
+              collected={collected}
+              onCollect={collectCard}
               onNavigate={navigate}
               onActivity={markActivity}
             />
@@ -171,7 +222,7 @@ function KioskShell() {
           )}
         </main>
 
-        <DemoPanel />
+        {route !== 'home' && route !== 'explore' && <DemoPanel key={route} route={route} />}
       </div>
 
       {/* Idle Timeout Dialog */}
@@ -198,7 +249,7 @@ function KioskShell() {
             <button className="v6-btn-primary" onClick={resumeSession}>
               继续当前体验 →
             </button>
-            <button className="v6-btn-text" onClick={resetToHome}>
+            <button className="v6-btn-text" onClick={finishSession}>
               立即结束并返回首页
             </button>
           </div>

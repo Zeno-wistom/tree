@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { seasonLeaves, seasonOrder } from '../data/catalog';
+import { seasonLeaves, seasonOrder, type RouteId } from '../data/catalog';
 import { useDemoState } from '../hooks/useDemoState';
 import './demopanel.css';
 
-export function DemoPanel() {
+export function DemoPanel({ route }: { route: RouteId }) {
   const { config, setField, resetDemoDefaults } = useDemoState();
   const [open, setOpen] = useState(false);
 
@@ -11,18 +11,18 @@ export function DemoPanel() {
   if (!config.demoMode) return null;
 
   return (
-    <aside className={`v6-demo-panel${open ? ' is-open' : ''}`} aria-label="课程评审演示控制台">
+    <aside className={`v6-demo-panel${open ? ' is-open' : ''}`} aria-label="演示设置">
       <button
         className="v6-demo-toggle"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
       >
-        {open ? '收起演示控制台 ✕' : '演示控制台（?demo=1）'}
+        {open ? '收起演示控制台' : '演示控制台'}
       </button>
 
       {open && (
         <div className="v6-demo-drawer">
-          <div className="v6-demo-row">
+          {route === 'leaf-drop' && <div className="v6-demo-row">
             <span>四季主题</span>
             <div>
               {seasonOrder.map((sid) => (
@@ -35,10 +35,10 @@ export function DemoPanel() {
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
-          <div className="v6-demo-row">
-            <span>秋千状态 (B)</span>
+          {(route === 'swing' || route === 'leaf-drop') && <div className="v6-demo-row">
+            <span>秋千状态</span>
             <div>
               {(
                 [
@@ -56,10 +56,11 @@ export function DemoPanel() {
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
+          {route === 'leaf-drop' && <>
           <div className="v6-demo-row">
-            <span>设备状态 (C)</span>
+            <span>设备状态</span>
             <div>
               {(
                 [
@@ -80,7 +81,7 @@ export function DemoPanel() {
           </div>
 
           <div className="v6-demo-row">
-            <span>库存状态 (C)</span>
+            <span>库存状态</span>
             <div>
               {(
                 [
@@ -131,7 +132,7 @@ export function DemoPanel() {
           </div>
 
           <div className="v6-demo-row">
-            <span>落卡结果 (C)</span>
+            <span>落卡结果</span>
             <div>
               {(
                 [
@@ -153,8 +154,10 @@ export function DemoPanel() {
             </div>
           </div>
 
-          <div className="v6-demo-row">
-            <span>邮局 / 音效</span>
+          </>}
+
+          {route === 'post-office' && <div className="v6-demo-row">
+            <span>邮局状态</span>
             <div>
               <button
                 className={config.postOfficeOpen ? 'is-on' : ''}
@@ -168,21 +171,9 @@ export function DemoPanel() {
               >
                 邮局关闭
               </button>
-              <button
-                className={!config.muted ? 'is-on' : ''}
-                onClick={() => setField('muted', false)}
-              >
-                音效开
-              </button>
-              <button
-                className={config.muted ? 'is-on' : ''}
-                onClick={() => setField('muted', true)}
-              >
-                静音
-              </button>
-              <button onClick={resetDemoDefaults}>恢复默认</button>
             </div>
-          </div>
+          </div>}
+          <button className="v6-btn-text v6-demo-reset" onClick={resetDemoDefaults}>恢复默认</button>
         </div>
       )}
     </aside>

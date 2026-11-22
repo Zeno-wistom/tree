@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.use({ hasTouch: true });
 
-test('V6.1 触控连续开信五轮及中途返回恢复', async ({ page }, testInfo) => {
+test('触控放大、下沉、开信五轮及中途返回恢复', async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => {
@@ -85,11 +85,17 @@ test('V6.1 触控连续开信五轮及中途返回恢复', async ({ page }, test
 
     expect(frames.length).toBeGreaterThan(15);
     expect(frames.every((frame) => frame.sameNode)).toBe(true);
-    expect(frames.some((frame) => frame.scale < 0.66 && frame.flap < 5)).toBe(true);
+    expect(frames.some((frame) => frame.scale > 0.68 && frame.flap < 5)).toBe(true);
+    expect(frames.some((frame) => frame.y > 330 && frame.flap < 5)).toBe(true);
     expect(frames.some((frame) => frame.seal < 0.95 && frame.flap > 30 && frame.flap < 165)).toBe(true);
-    expect(frames.some((frame) => frame.paperAlpha === 1 && frame.paper < 130 && frame.paper > -150)).toBe(true);
+    // Authored poses are +180 (inside the pocket) and -298 (left card fully fanned).
+    // A visible intermediate excludes a cut between those two endpoints.
+    const extraction = frames.filter((frame) => frame.paperAlpha > 0.95);
+    expect(extraction.some((frame) => frame.paper < 175 && frame.paper > -285),
+      `Opening ${run + 1}: visible paper poses ${extraction.filter((_, i) => i % 3 === 0).map((f) => f.paper.toFixed(0)).join(', ')}`,
+    ).toBe(true);
     expect(frames.at(-1)?.flap).toBeCloseTo(174, 0);
-    expect(frames.at(-1)?.paper).toBeCloseTo(-214, 0);
+    expect(frames.at(-1)?.paper).toBeCloseTo(-298, 0);
 
     // Compare neighbouring paints in logical stage pixels. Account for real frame timing on slower kiosk hardware.
     for (let index = 1; index < frames.length; index++) {
@@ -100,7 +106,7 @@ test('V6.1 触控连续开信五轮及中途返回恢复', async ({ page }, test
     }
 
     if (run === 0) {
-      await page.screenshot({ path: `docs/screenshots/${testInfo.project.name}-15-opening-end.png` });
+      await page.screenshot({ path: `docs/v6.2/${testInfo.project.name}-15-opening-end.png` });
     }
     await home.tap();
     await expect(opener).toBeEnabled();

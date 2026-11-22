@@ -25,7 +25,11 @@ test('C 普通访客看灯、等叶落稳并从侧盘取卡', async ({ page }, t
   const leafScene = page.locator('.v6c');
   await expect(page.getByRole('button', { name: /演示控制台/ })).toHaveCount(0);
   await expect(leafScene.getByRole('list', { name: /七步流程/ })).toHaveCount(0);
-  await requestLeaf(page);
+  await page.getByRole('button', { name: /提示音开启中/ }).click();
+  await expect(page.getByRole('button', { name: /已静音/ })).toBeVisible();
+  await page.getByRole('button', { name: /领实体叶形明信片/ }).click();
+  await expect(leafScene).toHaveAttribute('data-step', '2');
+  await page.getByRole('button', { name: /^实体按键/ }).click();
   await expect(leafScene).toHaveAttribute('data-step', '4');
   await page.getByRole('button', { name: /开始枝头预告/ }).click();
   await expect(leafScene).toHaveAttribute('data-flight', 'signal');
@@ -38,7 +42,7 @@ test('C 普通访客看灯、等叶落稳并从侧盘取卡', async ({ page }, t
     return Math.hypot(leaf.x + leaf.width / 2 - tray.x - tray.width / 2, leaf.y + leaf.height / 2 - tray.y - tray.height / 2);
   });
   expect(landingOffset).toBeLessThan(3);
-  await page.screenshot({ path: `docs/screenshots/${testInfo.project.name}-16-routeC-visitor-landed.png` });
+  await page.screenshot({ path: `docs/v6.2/${testInfo.project.name}-16-routeC-visitor-landed.png` });
   await page.getByRole('button', { name: /确认取走这张叶形卡/ }).click();
   await expect(leafScene).toHaveAttribute('data-step', '7');
   await expect(page.getByRole('heading', { name: /已取走/ })).toBeVisible();
@@ -74,6 +78,7 @@ test('C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、
   await expect(page.getByRole('heading', { name: '请选择触发方式' })).toBeVisible();
   await expect(scene.getByText(/夏.*同安红/)).toBeVisible();
   await page.getByRole('button', { name: /^秋千触发/ }).click();
+  await page.getByText('C 演示工具', { exact: true }).click();
   await page.getByRole('button', { name: /模拟未停稳/ }).click();
   await exception('03-04-unsafe');
   await expect(page.getByRole('button', { name: /确认取走这张叶形卡/ })).toHaveCount(0);
@@ -93,6 +98,7 @@ test('C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、
     await exception('05-mechanical');
     await expect(scene.getByText(text).filter({ hasText: /发卡已暂停/ })).toBeVisible();
     await expect(scene.getByText('不会自动补发')).toBeVisible();
+    await page.getByText('C 演示工具', { exact: true }).click();
     await page.getByRole('button', { name: /工作人员检查并复位/ }).click();
     await expect(scene).toHaveAttribute('data-step', '1');
   }
@@ -102,13 +108,28 @@ test('C 五类异常及恢复路径，涵盖库存、停稳、零张、卡滞、
   await requestLeaf(page);
   await release();
   await exception('06-off-target');
+  await page.getByText('C 演示工具', { exact: true }).click();
   await page.getByRole('button', { name: /工作人员确认并清盘恢复/ }).click();
   await expect(scene).toHaveAttribute('data-step', '1');
 
   await requestLeaf(page);
   await release();
-  await page.getByRole('button', { name: /不愿取/ }).click();
+  await page.getByRole('button', { name: '本轮不取卡' }).click();
   await exception('07-leftover');
+  await page.getByText('C 演示工具', { exact: true }).click();
   await page.getByRole('button', { name: /工作人员清盘并恢复/ }).click();
+  await expect(scene).toHaveAttribute('data-step', '1');
+
+  await requestLeaf(page);
+  await release();
+  await expect(scene).toHaveAttribute('data-step', '6');
+  const home = page.getByRole('button', { name: '← 返回树下', exact: true });
+  await home.click();
+  await page.getByRole('button', { name: 'C 实体领卡', exact: true }).click();
+  await start();
+  await exception('02-paused');
+  await expect(scene.getByText(/尚有余卡/)).toBeVisible();
+  await page.getByText('C 演示工具', { exact: true }).click();
+  await page.getByRole('button', { name: /工作人员检查并恢复领卡/ }).click();
   await expect(scene).toHaveAttribute('data-step', '1');
 });

@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { postOfficeCatalog, type PostcardItem, type RouteId } from '../data/catalog';
 import { useDemoState } from '../hooks/useDemoState';
 import { useChime } from '../hooks/useChime';
-import { MacauTileBorder } from '../components/MacauOrnaments';
+import { CanopyBranch, MacauTileBorder } from '../components/MacauOrnaments';
 import './postoffice.css';
 
 gsap.registerPlugin(useGSAP);
@@ -18,16 +18,38 @@ interface PostOfficeRouteProps {
   onFormDirtyChange?: (dirty: boolean) => void;
 }
 
-const DATE_PRESETS = [
-  { id: '1m', label: '1 个月后', date: '2027-01-21' },
-  { id: '6m', label: '半年后', date: '2027-05-21' },
-  { id: '1y', label: '1 年后', date: '2027-11-21' },
+const DATE_CHOICES = [
+  { months: 1, label: '1 个月后' },
+  { months: 6, label: '半年后' },
+  { months: 12, label: '1 年后' },
 ];
+
+function getDatePresets() {
+  const today = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Macau', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(new Date());
+  const [year, month, day] = today.split('-').map(Number);
+
+  return DATE_CHOICES.map(({ months, label }) => {
+    const target = new Date(Date.UTC(year, month - 1 + months, 1));
+    const lastDay = new Date(Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)).getUTCDate();
+    target.setUTCDate(Math.min(day, lastDay));
+    return { months, label, date: target.toISOString().slice(0, 10) };
+  });
+}
 
 const CATALOG_SERIES = [
   { id: 'school', name: '三校典藏' },
   { id: 'season', name: '四季限定' },
 ] as const;
+
+const SIMULATED_RECIPIENT = '未来的自己（示例）';
+const DELIVERY = {
+  pickup: { label: '到期通知校内取件', handoff: '模拟校内取件柜' },
+  mail: { label: '到期邮寄寄出', handoff: '虚构时光信箱' },
+} satisfies Record<DeliveryMethod, { label: string; handoff: string }>;
+
+const postalTileColors = { bg: '#465e6c', stroke: '#f6ecd7', accent: '#c39e6c' };
 
 function PostcardIndex({
   selectedId,
@@ -49,6 +71,7 @@ function PostcardIndex({
                 aria-pressed={card.id === selectedId}
                 onClick={() => onSelect(card.id)}
               >
+                <span className="v6d-swatch" style={{ backgroundColor: card.accent }} aria-hidden="true" />
                 {card.title}
               </button>
             ))}
@@ -56,6 +79,16 @@ function PostcardIndex({
         </fieldset>
       ))}
     </nav>
+  );
+}
+
+function PostalDesk({ children }: { children: ReactNode }) {
+  return (
+    <div className="v6d-desk">
+      <CanopyBranch className="v6d-desk-canopy" leafTint="#505b3c" accentLeaf="#7d8052" />
+      {children}
+      <MacauTileBorder className="v6d-desk-tiles" {...postalTileColors} />
+    </div>
   );
 }
 
@@ -88,25 +121,34 @@ function PostcardDesk({
     if (Math.abs(distance) < 8 && !skipClick.current) return;
     skipClick.current = true;
     dragSurface.current.dataset.dragging = 'true';
-    dragSurface.current.style.setProperty('--swipe-x', `${Math.max(-64, Math.min(64, distance * 0.56))}px`);
+    const shift = Math.max(-64, Math.min(64, distance * 0.56));
+    dragSurface.current.style.setProperty('--swipe-x', `${shift}px`);
+    dragSurface.current.style.setProperty('--swipe-tilt', `${shift / 16}deg`);
   };
   const finishDrag = (event: PointerEvent<HTMLButtonElement>) => {
     const origin = press.current;
     if (origin?.id !== event.pointerId) return;
     const distance = event.clientX - origin.x;
-    if (event.type === 'pointerup' && Math.abs(distance) >= 50) {
-      skipClick.current = true;
-      onBrowse(distance < 0 ? 1 : -1);
+    if (event.type === 'pointerup') {
+      if (Math.abs(distance) >= 50) {
+        skipClick.current = true;
+        onBrowse(distance < 0 ? 1 : -1);
+      } else if (event.pointerType === 'touch' && !skipClick.current && Math.abs(distance) < 8) {
+        // Touch capture can suppress the browser's click. Flip on release and ignore a follow-up click.
+        skipClick.current = true;
+        onFlip();
+      }
     }
     press.current = null;
     dragSurface.current?.removeAttribute('data-dragging');
     dragSurface.current?.style.removeProperty('--swipe-x');
+    dragSurface.current?.style.removeProperty('--swipe-tilt');
   };
 
   return (
-    <div className="v6d-desk">
+    <PostalDesk>
       <div className="v6d-desk-note">
-        <span>明信片选样</span>
+        <span className="v6d-swatch" style={{ backgroundColor: card.accent }} aria-hidden="true" />
         <strong>{card.subtitle}</strong>
       </div>
       <div className="v6d-postmark" aria-hidden="true">
@@ -149,7 +191,7 @@ function PostcardDesk({
           <button type="button" onClick={() => onBrowse(1)} aria-label="下一张明信片">→</button>
         </div>
       </div>
-    </div>
+    </PostalDesk>
   );
 }
 
@@ -160,6 +202,7 @@ export function PostOfficeRoute({
 }: PostOfficeRouteProps) {
   const root = useRef<HTMLElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
+  const messageField = useRef<HTMLTextAreaElement>(null);
   const sealCardRef = useRef<HTMLDivElement>(null);
   const sealFlapRef = useRef<HTMLDivElement>(null);
   const sealStampRef = useRef<HTMLDivElement>(null);
@@ -179,20 +222,20 @@ export function PostOfficeRoute({
       ? initialPostcardId
       : postOfficeCatalog[0].id
   );
-  const [deliveryDate, setDeliveryDate] = useState(DATE_PRESETS[1].date);
+  const [datePresets, setDatePresets] = useState(getDatePresets);
+  const [deliveryDate, setDeliveryDate] = useState(datePresets[1].date);
   const [method, setMethod] = useState<DeliveryMethod>('pickup');
-  const [recipient, setRecipient] = useState('');
-  const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [sealing, setSealing] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
 
   const selectedCard = postOfficeCatalog.find((card) => card.id === selectedId) ?? postOfficeCatalog[0];
+  const delivery = DELIVERY[method];
   const isClosed = !config.postOfficeOpen && !allowClosedDemo;
   const previousView = useRef({ step, allowClosedDemo });
-  const isDirty = step === 'compose' && (recipient.trim().length > 0 || address.trim().length > 0 || message.trim().length > 0);
-  const hasMissingDetails = !recipient.trim() || !address.trim() || !message.trim();
+  const hasMessage = message.trim().length > 0;
+  const isDirty = (step === 'compose' || step === 'seal') && hasMessage;
 
   useEffect(() => {
     onFormDirtyChange?.(isDirty);
@@ -259,7 +302,6 @@ export function PostOfficeRoute({
       paused: document.hidden,
       onComplete: () => {
         setSealing(false);
-        play('stamp');
         setStep('receipt');
       },
     });
@@ -272,15 +314,16 @@ export function PostOfficeRoute({
       .to(sealFlapRef.current, { rotateX: 0, duration: duration(0.48), ease: 'power2.inOut' })
       .set(sealFlapRef.current, { zIndex: 4 }, '<50%')
       .to(sealStampRef.current, { autoAlpha: 1, scale: 1, y: 0, rotation: -8, duration: duration(0.24), ease: 'power3.in' })
+      .call(() => play('stamp'))
       .to(sealStampRef.current, { scale: 0.97, duration: duration(0.09), ease: 'power1.out' })
       .to(sealStampRef.current, { scale: 1, duration: duration(0.12), ease: 'power1.out' });
   });
 
   const handleProceedToSeal = () => {
-    if (hasMissingDetails) {
-      setFormError('请填写收件人、联络地址与写给未来的寄语后再进入封袋核对。');
+    if (!hasMessage) {
+      setFormError('请在明信片背面写一句寄语，再进入封袋核对。');
       play('alert');
-      root.current?.querySelector<HTMLElement>('.v6d-compose-layout :is(input, textarea):placeholder-shown')?.focus();
+      messageField.current?.focus();
       return;
     }
     setFormError(null);
@@ -291,8 +334,10 @@ export function PostOfficeRoute({
   const resetPostOffice = () => {
     setStep('select');
     setFlipped(false);
-    setRecipient('');
-    setAddress('');
+    const nextDates = getDatePresets();
+    setDatePresets(nextDates);
+    setDeliveryDate(nextDates[1].date);
+    setMethod('pickup');
     setMessage('');
     setFormError(null);
     setShowHelpModal(false);
@@ -364,7 +409,7 @@ export function PostOfficeRoute({
                 ← 返回树下总览
               </button>
             </div>
-            <p className="v6d-demo-note">{config.postOfficeOpen ? '网页演示 · 不会产生真实邮寄' : '服务暂停 · 当前仅演示寄送'}</p>
+            <p className="v6d-demo-note">两种寄送方式均为模拟。</p>
           </div>
           <PostcardDesk card={selectedCard} flipped={flipped} onFlip={flipCard} onBrowse={browseCards} />
         </div>
@@ -379,9 +424,9 @@ export function PostOfficeRoute({
               <fieldset className="v6d-field-row">
                 <legend>选择未来寄达日期</legend>
                 <div className="v6d-pills v6d-pills--dates">
-                  {DATE_PRESETS.map((preset) => (
+                  {datePresets.map((preset) => (
                     <button
-                      key={preset.id}
+                      key={preset.months}
                       type="button"
                       aria-pressed={deliveryDate === preset.date}
                       onClick={() => setDeliveryDate(preset.date)}
@@ -396,45 +441,24 @@ export function PostOfficeRoute({
               <fieldset className="v6d-field-row">
                 <legend>寄送方式（演示）</legend>
                 <div className="v6d-pills">
-                  <button type="button" aria-pressed={method === 'pickup'} onClick={() => setMethod('pickup')}>
-                    到期通知校内取件
-                  </button>
-                  <button type="button" aria-pressed={method === 'mail'} onClick={() => setMethod('mail')}>
-                    到期邮寄寄出
-                  </button>
+                  {(['pickup', 'mail'] as const).map((option) => (
+                    <button key={option} type="button" aria-pressed={method === option} onClick={() => setMethod(option)}>
+                      {DELIVERY[option].label}
+                    </button>
+                  ))}
                 </div>
               </fieldset>
 
-              <div className="v6d-two-col">
-                <label className="v6d-input-label">
-                  <span>收件人姓名 / 称呼</span>
-                  <input
-                    type="text"
-                    value={recipient}
-                    onChange={(event) => setRecipient(event.target.value)}
-                    placeholder="例如：未来的自己 / 林同学"
-                    maxLength={24}
-                    required
-                  />
-                </label>
-                <label className="v6d-input-label">
-                  <span>{method === 'pickup' ? '联络邮箱 / 校内通知方式' : '收件地址（演示填写）'}</span>
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={(event) => setAddress(event.target.value)}
-                    placeholder={method === 'pickup' ? '例如：campus-demo@example.edu' : '例如：澳门氹仔大学大马路…'}
-                    maxLength={60}
-                    required
-                  />
-                </label>
-              </div>
+              <dl className="v6d-handoff" aria-label="模拟交接信息">
+                <div><dt>收件人</dt><dd>{SIMULATED_RECIPIENT}</dd></div>
+                <div><dt>交接地点</dt><dd>{delivery.handoff}</dd></div>
+              </dl>
+              <p id="v6d-writing-note" className="v6d-writing-note">寄语请勿填写真实姓名、地址或联系方式。</p>
 
-              {hasMissingDetails && formError && <p className="v6d-error" role="alert">{formError}</p>}
+              {!hasMessage && formError && <p className="v6d-error" role="alert">{formError}</p>}
             </div>
           </div>
-
-          <div className="v6d-desk">
+          <PostalDesk>
             <div className="v6d-desk-note">
               <span>在明信片背面落笔</span>
               <strong>{selectedCard.title}</strong>
@@ -442,20 +466,21 @@ export function PostOfficeRoute({
             <div className="v6d-back-frame" data-series={selectedCard.series}>
               <img src={selectedCard.backImage} alt={`${selectedCard.title} 背面实时预览`} />
               <textarea
+                ref={messageField}
                 className="v6d-live-msg"
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
                 placeholder="记下今天在德智广场的心情、愿望或想提醒未来自己的一句话…"
                 aria-label="写给未来的自己"
-                aria-describedby="v6d-message-hint"
+                aria-describedby="v6d-writing-note v6d-message-hint"
                 maxLength={120}
                 required
               />
               <span id="v6d-message-hint" className="v6d-message-count">{message.length} / 120 字</span>
-              <div className="v6d-live-recipient" aria-hidden="true">{recipient.trim()}</div>
-              <div className="v6d-live-address" aria-hidden="true">{address.trim()}</div>
+              <div className="v6d-live-recipient" aria-hidden="true">{SIMULATED_RECIPIENT}</div>
+              <div className="v6d-live-address" aria-hidden="true">{delivery.handoff}</div>
             </div>
-          </div>
+          </PostalDesk>
           <div className="v6d-actions v6d-compose-actions">
             <button className="v6-btn-primary" onClick={handleProceedToSeal}>
               核对信息，准备装入专用封袋 →
@@ -475,13 +500,13 @@ export function PostOfficeRoute({
             <dl className="v6d-summary">
               <div><dt>所选明信片</dt><dd>{selectedCard.title}</dd></div>
               <div><dt>寄达日期</dt><dd>{deliveryDate}</dd></div>
-              <div><dt>寄送方式</dt><dd>{method === 'pickup' ? '到期通知校内取件（演示）' : '到期邮寄寄出（演示）'}</dd></div>
-              <div><dt>收件人</dt><dd>{recipient}</dd></div>
-              <div><dt>地址 / 联络</dt><dd>{address}</dd></div>
+              <div><dt>寄送方式</dt><dd>{delivery.label}（演示）</dd></div>
+              <div><dt>收件人</dt><dd>{SIMULATED_RECIPIENT}</dd></div>
+              <div><dt>交接地点</dt><dd>{delivery.handoff}</dd></div>
               <div><dt>寄语内容</dt><dd>{message}</dd></div>
             </dl>
             <p className="v6d-policy-note">
-              正式寄送由现场人员核对装袋并确认交接。退件或逾期件由运营方处理。
+              核对完日期和寄语后，即可模拟装袋、封口和盖章。
             </p>
             <div className="v6d-actions">
               <button className="v6-btn-primary" disabled={sealing} onClick={runSealCeremony}>
@@ -500,11 +525,11 @@ export function PostOfficeRoute({
               未确认交接？查看求助指引
             </button>
             <div id="v6d-help" role="status" className="v6d-help-box" hidden={!showHelpModal}>
-              请保留明信片与专用封袋，联系德智广场值班人员核验。请勿自行投入未封口的信箱。
+              如需了解现场寄送与交接，请咨询德智广场值班人员。
             </div>
           </div>
 
-          <div className="v6d-desk">
+          <PostalDesk>
             <div className="v6d-desk-note">
               <span>专用封袋</span>
               <strong>{selectedCard.title}</strong>
@@ -516,14 +541,14 @@ export function PostOfficeRoute({
                 <img src={selectedCard.frontImage} alt={selectedCard.title} />
               </div>
               <div className="v6d-env-front">
-                <MacauTileBorder className="v6d-env-tile" bg={selectedCard.ink} />
+                <MacauTileBorder className="v6d-env-tile" {...postalTileColors} accent={selectedCard.accent} />
                 <span>德智广场 · 时光邮局专用封袋</span>
               </div>
               <div className="v6d-stamp v6d-env-stamp" ref={sealStampRef}>
                 时光封存 <span>{deliveryDate}</span>
               </div>
             </div>
-          </div>
+          </PostalDesk>
         </div>
       )}
 
@@ -534,7 +559,7 @@ export function PostOfficeRoute({
             <h1 ref={heading} tabIndex={-1}>已封存写给未来的这封信</h1>
             <p className="v6d-intro">收好回执，记住你和未来约定的日子。</p>
             <p className="v6d-policy-note">
-              网页演示不会产生真实邮寄、扣费或短信通知。刷新或重置后填写内容将清空。
+              这是模拟交接回执。寄语只在本次体验中显示，退出或刷新后清空。
             </p>
             <div className="v6d-receipt-actions">
               <button className="v6-btn-primary" onClick={() => onNavigate('home')}>
@@ -546,22 +571,22 @@ export function PostOfficeRoute({
               </div>
             </div>
           </div>
-          <div className="v6d-desk">
+          <PostalDesk>
             <article className="v6d-receipt-paper">
               <p className="v6d-receipt-no">NO. DZ-2026-DEMO</p>
               <h2>时光邮局 · 交接演示回执</h2>
               <dl className="v6d-receipt-details">
                 <div><dt>明信片</dt><dd>{selectedCard.title}</dd></div>
                 <div><dt>约定日期</dt><dd>{deliveryDate}</dd></div>
-                <div><dt>方式</dt><dd>{method === 'pickup' ? '到期通知取件' : '到期寄出'}</dd></div>
-                <div><dt>收件人</dt><dd>{recipient}</dd></div>
+                <div><dt>方式</dt><dd>{delivery.label}（演示）</dd></div>
+                <div><dt>交接地点</dt><dd>{delivery.handoff}</dd></div>
               </dl>
               <div className="v6d-stamp v6d-receipt-stamp" aria-hidden="true">
                 时光封存 <span>{deliveryDate}</span>
               </div>
-              <MacauTileBorder className="v6d-receipt-tile" bg={selectedCard.ink} />
+              <MacauTileBorder className="v6d-receipt-tile" {...postalTileColors} accent={selectedCard.accent} />
             </article>
-          </div>
+          </PostalDesk>
         </div>
       )}
     </section>

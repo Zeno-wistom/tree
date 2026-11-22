@@ -352,3 +352,63 @@ html, body, #root {
     transition-duration: 0.01ms !important;
   }
 }
+.v6-garden {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 58% 20%, #fff5d9 0, transparent 48%),
+    radial-gradient(ellipse at 1% 59%, #dce0c3 0, transparent 66%),
+    linear-gradient(150deg, #e2e2c7, #f6efd7 56%, #e9dab7);
+}
+.v6-garden::before, .v6-garden::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.v6-garden::before {
+  opacity: .37;
+  background:
+    linear-gradient(115deg, transparent 17%, #fff9e3 36%, transparent 58%),
+    radial-gradient(ellipse at 66% 28%, #fff9df 0, transparent 64%);
+}
+.v6-garden::after {
+  background: url('/assets/v62/macau-tile.svg') repeat left bottom / 88px;
+  mask-image: radial-gradient(ellipse 740px 320px at 100% 105%, #000 0%, transparent 89%);
+  opacity: .56;
+}
+.v6-garden-shadow {
+  position: absolute;
+  left: -84px;
+  top: -11px;
+  width: 1520px;
+  transform: rotate(9deg) scaleY(1.76);
+  transform-origin: center top;
+  filter: blur(11px);
+  opacity: .14;
+}
+.v6-garden-floor {
+  position: absolute;
+  inset: auto 0 0;
+  height: 160px;
+  background: linear-gradient(0deg, #9c80521a, transparent);
+}
+.v6-root[data-route='explore'] .v6-garden-floor { height: 220px; }
+
+.v6-root[data-route='home'] .v6-brand {
+  background: linear-gradient(90deg, #f4ebd7eb, #f4ebd7d4 77%, #f4ebd700);
+  padding-right: 28px;
+}
+.v6-root[data-route='explore'] .v6-garden-shadow {
+  opacity: .19;
+  filter: blur(4px);
+}
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 340ms;
+  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+}
+.v6-root[data-scene-transition] .v6-route-scene { animation: none; }
